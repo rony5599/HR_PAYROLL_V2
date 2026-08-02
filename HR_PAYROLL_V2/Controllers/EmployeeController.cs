@@ -1,6 +1,7 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Enums;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Employee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,20 @@ namespace HR_PAYROLL_V2.Controllers;
 public class EmployeeController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompanyLookupService _companyLookup;
+    private readonly ICacheService _cache;
 
-    public EmployeeController(IUnitOfWork unitOfWork)
+    public EmployeeController(IUnitOfWork unitOfWork, ICompanyLookupService companyLookup, ICacheService cache)
     {
         _unitOfWork = unitOfWork;
+        _companyLookup = companyLookup;
+        _cache = cache;
+    }
+
+    private async Task InvalidateSummaryCachesAsync()
+    {
+        await _cache.RemoveAsync("dashboard:summary");
+        await _cache.RemoveAsync("organogram:tree");
     }
 
     public async Task<IActionResult> Index(string? q)
@@ -63,7 +74,7 @@ public class EmployeeController : Controller
 
     private async Task PopulateDropdownsAsync(EmployeeViewModel? model = null)
     {
-        ViewBag.Companies = new SelectList(await _unitOfWork.Companies.GetAllAsync(), "Id", "Name", model?.CompanyId);
+        ViewBag.Companies = new SelectList(await _companyLookup.GetAllAsync(), "Id", "Name", model?.CompanyId);
         ViewBag.Departments = new SelectList(await _unitOfWork.OrganizationalUnits.GetAllAsync(), "Id", "Name", model?.OrganizationalUnitId);
         ViewBag.Designations = new SelectList(await _unitOfWork.Designations.GetAllAsync(), "Id", "Title", model?.DesignationId);
         ViewBag.Grades = new SelectList(await _unitOfWork.Grades.GetAllAsync(), "Id", "Name", model?.GradeId);
@@ -81,7 +92,7 @@ public class EmployeeController : Controller
     public async Task<IActionResult> Create()
     {
         var model = new EmployeeViewModel();
-        var firstCompany = (await _unitOfWork.Companies.GetAllAsync()).FirstOrDefault();
+        var firstCompany = (await _companyLookup.GetAllAsync()).FirstOrDefault();
         if (firstCompany is not null)
         {
             model.CompanyId = firstCompany.Id;
@@ -173,6 +184,7 @@ public class EmployeeController : Controller
         }
 
         await _unitOfWork.SaveChangesAsync();
+        await InvalidateSummaryCachesAsync();
 
         TempData["Success"] = "Employee created successfully.";
         return RedirectToAction(nameof(Index));
@@ -344,6 +356,7 @@ public class EmployeeController : Controller
         }
 
         await _unitOfWork.SaveChangesAsync();
+        await InvalidateSummaryCachesAsync();
 
         TempData["Success"] = "Employee updated successfully.";
         return RedirectToAction(nameof(Index));
@@ -359,6 +372,7 @@ public class EmployeeController : Controller
             employee.IsDeleted = true;
             _unitOfWork.Employees.Update(employee);
             await _unitOfWork.SaveChangesAsync();
+            await InvalidateSummaryCachesAsync();
             TempData["Success"] = "Employee removed.";
         }
 

@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Payroll;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace HR_PAYROLL_V2.Controllers;
 public class PayrollPeriodController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompanyLookupService _companyLookup;
 
-    public PayrollPeriodController(IUnitOfWork unitOfWork)
+    public PayrollPeriodController(IUnitOfWork unitOfWork, ICompanyLookupService companyLookup)
     {
         _unitOfWork = unitOfWork;
+        _companyLookup = companyLookup;
     }
 
     public async Task<IActionResult> Index()
@@ -30,7 +33,7 @@ public class PayrollPeriodController : Controller
 
     public async Task<IActionResult> Create()
     {
-        ViewBag.Companies = new SelectList(await _unitOfWork.Companies.GetAllAsync(), "Id", "Name");
+        ViewBag.Companies = new SelectList(await _companyLookup.GetAllAsync(), "Id", "Name");
         return View(new PayrollPeriodViewModel());
     }
 
@@ -45,7 +48,7 @@ public class PayrollPeriodController : Controller
 
         if (!ModelState.IsValid)
         {
-            ViewBag.Companies = new SelectList(await _unitOfWork.Companies.GetAllAsync(), "Id", "Name", model.CompanyId);
+            ViewBag.Companies = new SelectList(await _companyLookup.GetAllAsync(), "Id", "Name", model.CompanyId);
             return View(model);
         }
 

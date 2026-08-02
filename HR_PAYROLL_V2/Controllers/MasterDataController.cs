@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Company;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,17 @@ namespace HR_PAYROLL_V2.Controllers;
 public class MasterDataController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompanyLookupService _companyLookup;
 
-    public MasterDataController(IUnitOfWork unitOfWork)
+    public MasterDataController(IUnitOfWork unitOfWork, ICompanyLookupService companyLookup)
     {
         _unitOfWork = unitOfWork;
+        _companyLookup = companyLookup;
     }
 
     public async Task<IActionResult> Index(Guid? companyId)
     {
-        var companies = await _unitOfWork.Companies.GetAllAsync();
+        var companies = await _companyLookup.GetAllAsync();
         var effectiveCompanyId = companyId ?? companies.FirstOrDefault()?.Id;
 
         var model = new MasterDataPageViewModel

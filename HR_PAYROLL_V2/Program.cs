@@ -30,6 +30,7 @@ else
     builder.Services.AddDistributedMemoryCache();
 }
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
+builder.Services.AddScoped<ICompanyLookupService, CompanyLookupService>();
 
 // Identity / security
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();

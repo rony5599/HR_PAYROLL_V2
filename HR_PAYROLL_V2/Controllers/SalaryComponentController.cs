@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Payroll;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace HR_PAYROLL_V2.Controllers;
 public class SalaryComponentController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompanyLookupService _companyLookup;
 
-    public SalaryComponentController(IUnitOfWork unitOfWork)
+    public SalaryComponentController(IUnitOfWork unitOfWork, ICompanyLookupService companyLookup)
     {
         _unitOfWork = unitOfWork;
+        _companyLookup = companyLookup;
     }
 
     public async Task<IActionResult> Index()
@@ -26,13 +29,13 @@ public class SalaryComponentController : Controller
 
     private async Task PopulateDropdownsAsync(Guid? companyId = null)
     {
-        ViewBag.Companies = new SelectList(await _unitOfWork.Companies.GetAllAsync(), "Id", "Name", companyId);
+        ViewBag.Companies = new SelectList(await _companyLookup.GetAllAsync(), "Id", "Name", companyId);
     }
 
     public async Task<IActionResult> Create()
     {
         var model = new SalaryComponentViewModel();
-        var firstCompany = (await _unitOfWork.Companies.GetAllAsync()).FirstOrDefault();
+        var firstCompany = (await _companyLookup.GetAllAsync()).FirstOrDefault();
         if (firstCompany is not null)
         {
             model.CompanyId = firstCompany.Id;

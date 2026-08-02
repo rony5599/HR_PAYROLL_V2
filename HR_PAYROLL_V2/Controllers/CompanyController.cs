@@ -1,4 +1,5 @@
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Company;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +10,17 @@ namespace HR_PAYROLL_V2.Controllers;
 public class CompanyController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICompanyLookupService _companyLookup;
 
-    public CompanyController(IUnitOfWork unitOfWork)
+    public CompanyController(IUnitOfWork unitOfWork, ICompanyLookupService companyLookup)
     {
         _unitOfWork = unitOfWork;
+        _companyLookup = companyLookup;
     }
 
     public async Task<IActionResult> Index()
     {
-        var companies = await _unitOfWork.Companies.GetAllAsync();
+        var companies = await _companyLookup.GetAllAsync();
         return View(companies);
     }
 
@@ -54,6 +57,7 @@ public class CompanyController : Controller
 
         await _unitOfWork.Companies.AddAsync(company);
         await _unitOfWork.SaveChangesAsync();
+        await _companyLookup.InvalidateAsync();
 
         TempData["Success"] = "Company created successfully.";
         return RedirectToAction(nameof(Index));
@@ -124,6 +128,7 @@ public class CompanyController : Controller
 
         _unitOfWork.Companies.Update(company);
         await _unitOfWork.SaveChangesAsync();
+        await _companyLookup.InvalidateAsync();
 
         TempData["Success"] = "Company updated successfully.";
         return RedirectToAction(nameof(Index));
@@ -139,6 +144,7 @@ public class CompanyController : Controller
             company.IsDeleted = true;
             _unitOfWork.Companies.Update(company);
             await _unitOfWork.SaveChangesAsync();
+            await _companyLookup.InvalidateAsync();
             TempData["Success"] = "Company removed.";
         }
 

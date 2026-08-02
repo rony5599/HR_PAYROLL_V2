@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Enums;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Organogram;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +11,24 @@ namespace HR_PAYROLL_V2.Controllers;
 [Authorize]
 public class OrganogramController : Controller
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(2);
 
-    public OrganogramController(IUnitOfWork unitOfWork)
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ICacheService _cache;
+
+    public OrganogramController(IUnitOfWork unitOfWork, ICacheService cache)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
     }
 
     public async Task<IActionResult> Index()
+    {
+        var roots = await _cache.GetOrCreateAsync("organogram:tree", BuildTreeAsync, CacheTtl);
+        return View(roots);
+    }
+
+    private async Task<List<OrgNode>> BuildTreeAsync()
     {
         var employees = await _unitOfWork.Employees.Query()
             .Include(e => e.OrganizationalUnit)
@@ -51,6 +62,6 @@ public class OrganogramController : Controller
             }
         }
 
-        return View(roots);
+        return roots;
     }
 }

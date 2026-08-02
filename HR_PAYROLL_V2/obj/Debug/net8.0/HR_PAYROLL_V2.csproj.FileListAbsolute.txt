@@ -125,4 +125,4 @@ G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\refint\HR_PAYROLL_V2.dll
 G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\HR_PAYROLL_V2.pdb
 G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\HR_PAYROLL_V2.genruntimeconfig.cache
 G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\ref\HR_PAYROLL_V2.dll
-G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+G:\HR_PAYROLL_V2\HR_PAYROLL_V2\obj\Debug\net8.0\HR_PAYROLL_V2.sourcelink.json
