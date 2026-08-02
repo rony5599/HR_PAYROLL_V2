@@ -1,0 +1,17 @@
+@model HR_PAYROLL_V2.Models.Payroll.OvertimePolicyViewModel
+@{
+    ViewData["Title"] = "Edit Overtime Policy";
+}
+<div class="page-head"><div><h2>Edit Overtime Policy</h2><p>@Model.Name</p></div></div>
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            @await Html.PartialAsync("_Form", Model)
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>

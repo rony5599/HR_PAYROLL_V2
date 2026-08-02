@@ -1,0 +1,44 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Employee>
+@{
+    ViewData["Title"] = "Employees";
+}
+<div class="page-head">
+    <div>
+        <h2>Employees</h2>
+        <p>Manage employee profiles, assignments, and reporting relationships.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Employee</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <input class="control search" name="q" value="@ViewBag.Query" placeholder="Search by name or employee ID..." />
+            <button class="btn btn-outline" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Company</th><th>Department</th><th>Designation</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td><div class="employee-cell"><span class="mini-avatar">@employee.FirstName.Substring(0,1)@employee.LastName.Substring(0,1)</span><div><strong>@employee.FullName</strong><small>@employee.EmployeeCode</small></div></div></td>
+                    <td>@employee.Company?.Name</td>
+                    <td>@(employee.OrganizationalUnit?.Name ?? "—")</td>
+                    <td>@(employee.Designation?.Title ?? "—")</td>
+                    <td><span class="status s-success">@employee.Status</span></td>
+                    <td>
+                        <a class="btn btn-soft btn-sm" asp-action="Details" asp-route-id="@employee.Id">View</a>
+                        <a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@employee.Id">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@employee.Id" method="post" style="display:inline">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this employee?');">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

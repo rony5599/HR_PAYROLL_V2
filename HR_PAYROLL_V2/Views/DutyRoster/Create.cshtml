@@ -1,0 +1,44 @@
+@model HR_PAYROLL_V2.Models.Shift.DutyRosterViewModel
+@using HR_PAYROLL_V2.Domain.Entities
+@{
+    ViewData["Title"] = "New Duty Roster";
+    var employees = (List<Employee>)ViewBag.Employees;
+}
+<div class="page-head"><div><h2>New Duty Roster</h2><p>Select a shift, date range, and the employees to assign it to.</p></div></div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+                <div class="field"><label asp-for="Name">Roster name</label><input asp-for="Name" placeholder="Example: August Worker Rotation" /></div>
+                <div class="field"><label asp-for="Code">Roster code</label><input asp-for="Code" placeholder="RST-AUG-WRK" /></div>
+                <div class="field"><label asp-for="ShiftId">Shift</label><select asp-for="ShiftId" asp-items="ViewBag.Shifts"></select></div>
+                <div class="field"><label asp-for="OrganizationalUnitId">Department (optional filter)</label><select asp-for="OrganizationalUnitId" asp-items="ViewBag.Departments"><option value="">All departments</option></select></div>
+                <div class="field"><label asp-for="StartDate"></label><input asp-for="StartDate" type="date" /></div>
+                <div class="field"><label asp-for="EndDate"></label><input asp-for="EndDate" type="date" /></div>
+                <div class="field full">
+                    <label>Employees</label>
+                    <div class="checkbox-grid">
+                        @foreach (var e in employees)
+                        {
+                            <label class="check-option" data-department="@e.OrganizationalUnitId">
+                                <input type="checkbox" name="SelectedEmployeeIds" value="@e.Id" />
+                                @e.FullName <small style="color:var(--muted)">(@e.EmployeeCode)</small>
+                            </label>
+                        }
+                        @if (!employees.Any())
+                        {
+                            <p style="color:var(--muted);font-size:13px">No employees found.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Roster (Draft)</button>
+            </div>
+        </form>
+    </div>
+</div>

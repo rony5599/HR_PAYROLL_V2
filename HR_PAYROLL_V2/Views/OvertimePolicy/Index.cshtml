@@ -1,0 +1,33 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.OvertimePolicy>
+@{
+    ViewData["Title"] = "Overtime Policies";
+}
+<div class="page-head">
+    <div>
+        <h2>Overtime Policies</h2>
+        <p>Multipliers, thresholds, and approval rules for overtime pay.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Policy</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Policy</th><th>Company</th><th>Max Daily/Monthly</th><th>Normal/Weekend/Holiday Rate</th><th>Approval</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td><strong>@p.Name</strong></td>
+                    <td>@p.Company?.Name</td>
+                    <td>@p.MaxDailyHours h / @p.MaxMonthlyHours h</td>
+                    <td>@(p.NormalMultiplier)&times; / @(p.WeekendMultiplier)&times; / @(p.HolidayMultiplier)&times;</td>
+                    <td>@(p.RequiresApproval ? "Required" : "Automatic")</td>
+                    <td><span class="status @(p.IsActive ? "s-success" : "s-neutral")">@(p.IsActive ? "Active" : "Inactive")</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@p.Id">Edit</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.LeaveApplication>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Leave Management";
+    bool CanApprove = User.IsInRole("SuperAdministrator") || User.IsInRole("CompanyAdministrator") || User.IsInRole("HRAdministrator");
+}
+<div class="page-head">
+    <div>
+        <h2>Leave Management</h2>
+        <p>Leave applications routed for manager and HR approval.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Apply Leave</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body toolbar">
+        <a class="btn btn-outline btn-sm @(ViewBag.Status == null ? "btn-soft" : "")" asp-action="Index">All</a>
+        <a class="btn btn-outline btn-sm @(ViewBag.Status == LeaveStatus.Pending ? "btn-soft" : "")" asp-action="Index" asp-route-status="Pending">Pending</a>
+        <a class="btn btn-outline btn-sm @(ViewBag.Status == LeaveStatus.Approved ? "btn-soft" : "")" asp-action="Index" asp-route-status="Approved">Approved</a>
+        <a class="btn btn-outline btn-sm @(ViewBag.Status == LeaveStatus.Rejected ? "btn-soft" : "")" asp-action="Index" asp-route-status="Rejected">Rejected</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th>@if (CanApprove) { <th>Action</th> }</tr></thead>
+            <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Employee?.FullName</td>
+                    <td>@app.LeaveType?.Name</td>
+                    <td>@app.StartDate.ToString("MMM d") &ndash; @app.EndDate.ToString("MMM d, yyyy")</td>
+                    <td>@app.Days</td>
+                    <td>@app.Reason</td>
+                    <td>
+                        <span class="status @(app.Status == LeaveStatus.Approved ? "s-success" : app.Status == LeaveStatus.Rejected ? "s-danger" : app.Status == LeaveStatus.Cancelled ? "s-neutral" : "s-warning")">@app.Status</span>
+                    </td>
+                    @if (CanApprove)
+                    {
+                        <td>
+                            @if (app.Status == LeaveStatus.Pending)
+                            {
+                                <form asp-action="Approve" method="post" style="display:inline">
+                                    <input type="hidden" name="Id" value="@app.Id" />
+                                    <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                                </form>
+                                <form asp-action="Reject" method="post" style="display:inline">
+                                    <input type="hidden" name="Id" value="@app.Id" />
+                                    <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

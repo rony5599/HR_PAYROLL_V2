@@ -1,0 +1,55 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Attendance>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Attendance";
+    DateOnly date = ViewBag.Date;
+}
+<div class="page-head">
+    <div>
+        <h2>Attendance</h2>
+        <p>Daily attendance calculated from assigned shift, check-in, and check-out times.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Manual Attendance</a>
+</div>
+
+<div class="summary-strip">
+    <div class="summary-pill"><strong>@Model.Count(a => a.Status == AttendanceStatus.Present)</strong><span>Present</span></div>
+    <div class="summary-pill"><strong>@Model.Count(a => a.Status == AttendanceStatus.Late)</strong><span>Late</span></div>
+    <div class="summary-pill"><strong>@Model.Count(a => a.Status == AttendanceStatus.HalfDay)</strong><span>Half Day</span></div>
+    <div class="summary-pill"><strong>@Model.Count(a => a.Status == AttendanceStatus.Incomplete)</strong><span>Incomplete</span></div>
+    <div class="summary-pill"><strong>@Model.Count()</strong><span>Total Records</span></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <input class="control" type="date" name="date" value="@date.ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
+        </form>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Shift</th><th>Check In</th><th>Check Out</th><th>Worked Hours</th><th>Late</th><th>Source</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Employee?.FullName</td>
+                    <td>@(a.Shift?.Name ?? "—")</td>
+                    <td>@(a.CheckIn?.ToString("HH:mm") ?? "—")</td>
+                    <td>@(a.CheckOut?.ToString("HH:mm") ?? "—")</td>
+                    <td>@a.WorkedHours h</td>
+                    <td>@(a.LateMinutes > 0 ? $"{a.LateMinutes} min" : "—")</td>
+                    <td>@a.Source</td>
+                    <td>
+                        <span class="status @(a.Status == AttendanceStatus.Present ? "s-success" : a.Status == AttendanceStatus.Late || a.Status == AttendanceStatus.HalfDay ? "s-warning" : a.Status == AttendanceStatus.Incomplete ? "s-danger" : "s-info")">@a.Status</span>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (!Model.Any())
+        {
+            <p style="text-align:center;color:var(--muted);padding:20px">No attendance records for this date yet.</p>
+        }
+    </div>
+</div>

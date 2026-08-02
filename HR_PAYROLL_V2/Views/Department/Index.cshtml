@@ -1,0 +1,38 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.OrganizationalUnit>
+@{
+    ViewData["Title"] = "Departments";
+}
+<div class="page-head">
+    <div>
+        <h2>Departments &amp; Organizational Units</h2>
+        <p>Divisions, departments, sections, and teams across all companies.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Department</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Name</th><th>Code</th><th>Company</th><th>Level</th><th>Cost Center</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var unit in Model)
+            {
+                <tr>
+                    <td><strong>@unit.Name</strong></td>
+                    <td>@unit.Code</td>
+                    <td>@unit.Company?.Name</td>
+                    <td>@unit.Level</td>
+                    <td>@(unit.CostCenter ?? "—")</td>
+                    <td><span class="status @(unit.IsActive ? "s-success" : "s-neutral")">@(unit.IsActive ? "Active" : "Inactive")</span></td>
+                    <td>
+                        <a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@unit.Id">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@unit.Id" method="post" style="display:inline">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this department?');">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

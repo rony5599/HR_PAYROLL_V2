@@ -1,0 +1,20 @@
+@model HR_PAYROLL_V2.Models.Employee.EmployeeViewModel
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+<div class="page-head">
+    <div><h2>Edit Employee</h2><p>@Model.FirstName @Model.LastName</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            @await Html.PartialAsync("_Form", Model)
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>

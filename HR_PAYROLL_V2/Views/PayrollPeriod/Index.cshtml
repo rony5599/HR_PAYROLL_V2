@@ -1,0 +1,33 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.PayrollPeriod>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Payroll Periods";
+}
+<div class="page-head">
+    <div>
+        <h2>Payroll Periods</h2>
+        <p>Create a payroll period, then run payroll from attendance, leave, and salary data.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ New Period</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Period</th><th>Company</th><th>Dates</th><th>Payment Date</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td><strong>@p.Name</strong></td>
+                    <td>@p.Company?.Name</td>
+                    <td>@p.StartDate.ToString("MMM d")&ndash;@p.EndDate.ToString("MMM d, yyyy")</td>
+                    <td>@p.PaymentDate.ToString("MMM d, yyyy")</td>
+                    <td><span class="status @(p.Status == PayrollPeriodStatus.Finalized || p.Status == PayrollPeriodStatus.Locked ? "s-success" : "s-warning")">@p.Status</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-controller="Payroll" asp-action="Index" asp-route-periodId="@p.Id">Open</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

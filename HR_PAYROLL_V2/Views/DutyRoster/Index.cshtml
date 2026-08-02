@@ -1,0 +1,33 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.DutyRoster>
+@{
+    ViewData["Title"] = "Duty Rosters";
+}
+<div class="page-head">
+    <div>
+        <h2>Duty Rosters</h2>
+        <p>Bulk-assign shifts to a group of employees for a date range.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ New Roster</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Roster</th><th>Shift</th><th>Department</th><th>Dates</th><th>Employees</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.Name</strong><br /><small>@r.Code</small></td>
+                    <td>@r.Shift?.Name</td>
+                    <td>@(r.OrganizationalUnit?.Name ?? "All")</td>
+                    <td>@r.StartDate.ToString("MMM d")&ndash;@r.EndDate.ToString("MMM d, yyyy")</td>
+                    <td>@r.Members.Count</td>
+                    <td><span class="status @(r.IsLocked ? "s-success" : "s-warning")">@(r.IsLocked ? "Published" : "Draft")</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Details" asp-route-id="@r.Id">Open</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

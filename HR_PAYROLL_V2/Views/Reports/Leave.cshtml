@@ -1,0 +1,51 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.LeaveApplication>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Leave Report";
+    DateOnly from = ViewBag.From;
+    DateOnly to = ViewBag.To;
+    LeaveStatus? status = ViewBag.Status;
+}
+<div class="page-head">
+    <div><h2>Leave Report</h2><p>@Model.Count application(s) overlapping @from.ToString("MMM d, yyyy") &ndash; @to.ToString("MMM d, yyyy").</p></div>
+    <a class="btn btn-outline" asp-action="Leave" asp-route-from="@from" asp-route-to="@to" asp-route-status="@status" asp-route-export="true">Export CSV</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <input class="control" type="date" name="from" value="@from.ToString("yyyy-MM-dd")" />
+            <input class="control" type="date" name="to" value="@to.ToString("yyyy-MM-dd")" />
+            <select class="control" name="status">
+                <option value="">All statuses</option>
+                @foreach (var s in Enum.GetValues<LeaveStatus>())
+                {
+                    <option value="@s" selected="@(status == s)">@s</option>
+                }
+            </select>
+            <button class="btn btn-outline" type="submit">Filter</button>
+        </form>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Status</th><th>Reason</th></tr></thead>
+            <tbody>
+            @foreach (var l in Model)
+            {
+                <tr>
+                    <td>@l.Employee?.FullName</td>
+                    <td>@l.LeaveType?.Name</td>
+                    <td>@l.StartDate.ToString("MMM d")&ndash;@l.EndDate.ToString("MMM d, yyyy")</td>
+                    <td>@l.Days</td>
+                    <td><span class="status @(l.Status == LeaveStatus.Approved ? "s-success" : l.Status == LeaveStatus.Rejected ? "s-danger" : "s-warning")">@l.Status</span></td>
+                    <td>@l.Reason</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (!Model.Any())
+        {
+            <p style="text-align:center;color:var(--muted);padding:20px">No leave applications in this range.</p>
+        }
+    </div>
+</div>

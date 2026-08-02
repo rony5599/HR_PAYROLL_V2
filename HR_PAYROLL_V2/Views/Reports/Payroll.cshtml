@@ -1,0 +1,49 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.PayrollRecord>
+@{
+    ViewData["Title"] = "Payroll Report";
+    var period = (HR_PAYROLL_V2.Domain.Entities.PayrollPeriod?)ViewBag.Period;
+}
+<div class="page-head">
+    <div><h2>Payroll Report</h2><p>@(period is null ? "Select a payroll period to view its report." : $"{period.Name} · {period.StartDate:MMM d} – {period.EndDate:MMM d, yyyy}")</p></div>
+    @if (period is not null)
+    {
+        <a class="btn btn-outline" asp-action="Payroll" asp-route-periodId="@period.Id" asp-route-export="true">Export CSV</a>
+    }
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <select class="control" name="periodId" asp-items="ViewBag.Periods" onchange="this.form.submit()">
+                <option value="">Select a payroll period</option>
+            </select>
+        </form>
+    </div>
+    @if (period is not null)
+    {
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Employee</th><th>Basic</th><th>Earnings</th><th>Overtime</th><th>Attendance Deduct</th><th>Work-hour Deduct</th><th>Gross</th><th>Net Pay</th></tr></thead>
+                <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.Employee?.FullName</td>
+                        <td>@r.BasicAmount.ToString("C")</td>
+                        <td>@r.EarningsAmount.ToString("C")</td>
+                        <td>@r.OvertimeAmount.ToString("C")</td>
+                        <td>@r.AttendanceDeductionAmount.ToString("C")</td>
+                        <td>@r.WorkHourDeductionAmount.ToString("C")</td>
+                        <td>@r.GrossPay.ToString("C")</td>
+                        <td><strong>@r.NetPay.ToString("C")</strong></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            @if (!Model.Any())
+            {
+                <p style="text-align:center;color:var(--muted);padding:20px">No payroll has been run for this period yet.</p>
+            }
+        </div>
+    }
+</div>

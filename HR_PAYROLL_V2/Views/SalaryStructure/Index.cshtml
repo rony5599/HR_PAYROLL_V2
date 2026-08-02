@@ -1,0 +1,33 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.SalaryStructure>
+@{
+    ViewData["Title"] = "Salary Structures";
+}
+<div class="page-head">
+    <div>
+        <h2>Salary Structures</h2>
+        <p>Named bundles of salary components assigned to employees.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ New Salary Structure</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Structure</th><th>Company</th><th>Frequency</th><th>Components</th><th>Effective Date</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td><strong>@s.Name</strong><br /><small>@s.Code</small></td>
+                    <td>@s.Company?.Name</td>
+                    <td>@s.PayrollFrequency</td>
+                    <td>@string.Join(", ", s.Components.Select(c => c.SalaryComponent?.Name))</td>
+                    <td>@s.EffectiveDate.ToString("MMM d, yyyy")</td>
+                    <td><span class="status @(s.IsActive ? "s-success" : "s-neutral")">@(s.IsActive ? "Active" : "Inactive")</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@s.Id">Edit</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

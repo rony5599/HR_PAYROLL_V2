@@ -1,0 +1,24 @@
+@model HR_PAYROLL_V2.Models.Leave.LeaveApplicationViewModel
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+<div class="page-head"><div><h2>Apply for Leave</h2><p>Submit a leave request for approval.</p></div></div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="EmployeeId">Employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"></select></div>
+                <div class="field"><label asp-for="LeaveTypeId">Leave type</label><select asp-for="LeaveTypeId" asp-items="ViewBag.LeaveTypes"></select></div>
+                <div class="field"><label asp-for="StartDate"></label><input asp-for="StartDate" type="date" /></div>
+                <div class="field"><label asp-for="EndDate"></label><input asp-for="EndDate" type="date" /></div>
+                <div class="field full"><label asp-for="Reason"></label><textarea asp-for="Reason"></textarea></div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Submit Leave</button>
+            </div>
+        </form>
+    </div>
+</div>

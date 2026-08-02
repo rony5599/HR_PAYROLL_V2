@@ -1,0 +1,37 @@
+@model HR_PAYROLL_V2.Models.Payroll.SalaryStructureViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+@using HR_PAYROLL_V2.Domain.Entities
+@{
+    var components = (IReadOnlyList<SalaryComponent>)ViewBag.Components;
+    var selected = (List<Guid>)ViewBag.SelectedComponentIds;
+}
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name">Structure name</label><input asp-for="Name" placeholder="Example: Permanent Grade 5" /></div>
+    <div class="field"><label asp-for="Code">Structure code</label><input asp-for="Code" placeholder="STR-PG5" /></div>
+    <div class="field"><label asp-for="PayrollFrequency"></label>
+        <select asp-for="PayrollFrequency"><option>Monthly</option><option>Weekly</option><option>Biweekly</option><option>Daily</option></select>
+    </div>
+    <div class="field"><label asp-for="ProrationMethod"></label><select asp-for="ProrationMethod" asp-items="Html.GetEnumSelectList<ProrationMethod>()"></select></div>
+    <div class="field"><label asp-for="EffectiveDate"></label><input asp-for="EffectiveDate" type="date" /></div>
+    <div class="field"><label asp-for="IsActive">Status</label>
+        <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+    </div>
+    <div class="field full">
+        <label>Included components</label>
+        <div class="checkbox-grid">
+            @foreach (var c in components)
+            {
+                <label class="check-option">
+                    <input type="checkbox" name="SelectedComponentIds" value="@c.Id" checked="@(selected.Contains(c.Id))" />
+                    @c.Name (@(c.Method == SalaryCalculationMethod.PercentageOfBasic ? $"{c.Value}%" : c.Value.ToString("C")))
+                </label>
+            }
+            @if (!components.Any())
+            {
+                <p style="color:var(--muted);font-size:13px">No components available for this company yet. <a asp-controller="SalaryComponent" asp-action="Create">Add one first</a>.</p>
+            }
+        </div>
+    </div>
+</div>

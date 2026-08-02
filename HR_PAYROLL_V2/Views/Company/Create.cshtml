@@ -1,0 +1,49 @@
+@model HR_PAYROLL_V2.Models.Company.CompanyViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Add Company";
+}
+<div class="page-head">
+    <div><h2>Add Company</h2><p>Create a new company entity.</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="Name"></label><input asp-for="Name" /><span asp-validation-for="Name" class="notice" style="padding:2px 0;background:none;border:0;color:#b91c1c"></span></div>
+                <div class="field"><label asp-for="Code"></label><input asp-for="Code" /></div>
+                <div class="field"><label asp-for="RegistrationNumber"></label><input asp-for="RegistrationNumber" /></div>
+                <div class="field"><label asp-for="ContactEmail"></label><input asp-for="ContactEmail" /></div>
+                <div class="field"><label asp-for="ContactPhone"></label><input asp-for="ContactPhone" /></div>
+                <div class="field"><label asp-for="PayrollCurrency"></label><input asp-for="PayrollCurrency" /></div>
+                <div class="field"><label asp-for="PayrollFrequency"></label>
+                    <select asp-for="PayrollFrequency">
+                        <option>Monthly</option><option>Weekly</option><option>Biweekly</option><option>Daily</option>
+                    </select>
+                </div>
+                <div class="field"><label asp-for="IsActive">Status</label>
+                    <select asp-for="IsActive" asp-items="@(new List<SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+                </div>
+                <div class="field full"><label asp-for="Address"></label><textarea asp-for="Address"></textarea></div>
+                <div class="field full">
+                    <label>Weekend days</label>
+                    <div class="day-picker">
+                        <label><input asp-for="WeekendSunday" />Sun</label>
+                        <label><input asp-for="WeekendMonday" />Mon</label>
+                        <label><input asp-for="WeekendTuesday" />Tue</label>
+                        <label><input asp-for="WeekendWednesday" />Wed</label>
+                        <label><input asp-for="WeekendThursday" />Thu</label>
+                        <label><input asp-for="WeekendFriday" />Fri</label>
+                        <label><input asp-for="WeekendSaturday" />Sat</label>
+                    </div>
+                </div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Company</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.OvertimeRequest>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Overtime";
+    bool CanApprove = User.IsInRole("SuperAdministrator") || User.IsInRole("CompanyAdministrator") || User.IsInRole("HRAdministrator");
+}
+<div class="page-head">
+    <div>
+        <h2>Overtime</h2>
+        <p>Overtime requests, approvals, and payroll-eligible hours.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Request Overtime</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body toolbar">
+        <a class="btn btn-outline btn-sm" asp-action="Index">All</a>
+        <a class="btn btn-outline btn-sm" asp-action="Index" asp-route-status="Pending">Pending</a>
+        <a class="btn btn-outline btn-sm" asp-action="Index" asp-route-status="Approved">Approved</a>
+        <a class="btn btn-outline btn-sm" asp-action="Index" asp-route-status="Rejected">Rejected</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Date</th><th>Hours</th><th>Reason</th><th>Status</th>@if (CanApprove) { <th>Action</th> }</tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Employee?.FullName</td>
+                    <td>@r.OvertimeDate.ToString("MMM d, yyyy")</td>
+                    <td>@r.Hours h</td>
+                    <td>@r.Reason</td>
+                    <td><span class="status @(r.Status == OvertimeRequestStatus.Approved ? "s-success" : r.Status == OvertimeRequestStatus.Rejected ? "s-danger" : "s-warning")">@r.Status</span></td>
+                    @if (CanApprove)
+                    {
+                        <td>
+                            @if (r.Status == OvertimeRequestStatus.Pending)
+                            {
+                                <form asp-action="Approve" method="post" style="display:inline">
+                                    <input type="hidden" name="Id" value="@r.Id" />
+                                    <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                                </form>
+                                <form asp-action="Reject" method="post" style="display:inline">
+                                    <input type="hidden" name="Id" value="@r.Id" />
+                                    <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

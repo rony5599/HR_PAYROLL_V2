@@ -1,0 +1,43 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Attendance>
+@{
+    ViewData["Title"] = "Attendance Report";
+    DateOnly from = ViewBag.From;
+    DateOnly to = ViewBag.To;
+}
+<div class="page-head">
+    <div><h2>Attendance Report</h2><p>@Model.Count record(s) between @from.ToString("MMM d, yyyy") and @to.ToString("MMM d, yyyy").</p></div>
+    <a class="btn btn-outline" asp-action="Attendance" asp-route-from="@from" asp-route-to="@to" asp-route-export="true">Export CSV</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <input class="control" type="date" name="from" value="@from.ToString("yyyy-MM-dd")" />
+            <input class="control" type="date" name="to" value="@to.ToString("yyyy-MM-dd")" />
+            <button class="btn btn-outline" type="submit">Filter</button>
+        </form>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Date</th><th>Employee</th><th>Shift</th><th>Check In</th><th>Check Out</th><th>Worked Hours</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.AttendanceDate.ToString("MMM d, yyyy")</td>
+                    <td>@a.Employee?.FullName</td>
+                    <td>@(a.Shift?.Name ?? "—")</td>
+                    <td>@(a.CheckIn?.ToString("HH:mm") ?? "—")</td>
+                    <td>@(a.CheckOut?.ToString("HH:mm") ?? "—")</td>
+                    <td>@a.WorkedHours h</td>
+                    <td>@a.Status</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (!Model.Any())
+        {
+            <p style="text-align:center;color:var(--muted);padding:20px">No attendance records in this range.</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@model HR_PAYROLL_V2.Models.Payroll.OvertimeRequestViewModel
+@{
+    ViewData["Title"] = "Request Overtime";
+}
+<div class="page-head"><div><h2>Request Overtime</h2><p>Submit hours worked beyond the assigned shift for approval.</p></div></div>
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="EmployeeId">Employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"></select></div>
+                <div class="field"><label asp-for="OvertimeDate"></label><input asp-for="OvertimeDate" type="date" /></div>
+                <div class="field"><label asp-for="Hours"></label><input asp-for="Hours" type="number" step="0.25" /></div>
+                <div class="field full"><label asp-for="Reason"></label><textarea asp-for="Reason" placeholder="Example: Month-end deployment support."></textarea></div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Submit for Approval</button>
+            </div>
+        </form>
+    </div>
+</div>

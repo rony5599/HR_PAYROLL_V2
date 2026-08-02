@@ -1,0 +1,24 @@
+@model HR_PAYROLL_V2.Models.Attendance.AttendanceRegularizationViewModel
+@{
+    ViewData["Title"] = "Request Attendance Correction";
+}
+<div class="page-head"><div><h2>Request Attendance Correction</h2><p>Submit a correction for a missing or incorrect attendance record.</p></div></div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="EmployeeId">Employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"></select></div>
+                <div class="field"><label asp-for="AttendanceDate"></label><input asp-for="AttendanceDate" type="date" /></div>
+                <div class="field"><label asp-for="RequestedCheckIn">Requested check-in</label><input asp-for="RequestedCheckIn" type="time" /></div>
+                <div class="field"><label asp-for="RequestedCheckOut">Requested check-out</label><input asp-for="RequestedCheckOut" type="time" /></div>
+                <div class="field full"><label asp-for="Reason"></label><textarea asp-for="Reason" placeholder="Example: Biometric device was offline during check-in."></textarea></div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Submit for Approval</button>
+            </div>
+        </form>
+    </div>
+</div>

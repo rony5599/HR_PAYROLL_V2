@@ -1,0 +1,20 @@
+@model HR_PAYROLL_V2.Models.Leave.LeaveTypeViewModel
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name"></label><input asp-for="Name" placeholder="Example: Annual Leave" /></div>
+    <div class="field"><label asp-for="Code"></label><input asp-for="Code" placeholder="LV-ANNUAL" /></div>
+    <div class="field"><label asp-for="AnnualEntitlementDays"></label><input asp-for="AnnualEntitlementDays" type="number" step="0.5" /></div>
+    <div class="field"><label asp-for="MaxConsecutiveDays"></label><input asp-for="MaxConsecutiveDays" type="number" /></div>
+    <div class="field"><label asp-for="AdvanceNoticeDays"></label><input asp-for="AdvanceNoticeDays" type="number" /></div>
+    <div class="field"><label asp-for="IsActive">Status</label>
+        <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+    </div>
+    <div class="field full">
+        <div class="checkbox-grid">
+            <label class="check-option"><input asp-for="RequiresAttachment" /> Requires attachment</label>
+            <label class="check-option"><input asp-for="ExcludeWeekends" /> Exclude weekends from day count</label>
+            <label class="check-option"><input asp-for="ExcludeHolidays" /> Exclude paid holidays from day count</label>
+        </div>
+    </div>
+</div>

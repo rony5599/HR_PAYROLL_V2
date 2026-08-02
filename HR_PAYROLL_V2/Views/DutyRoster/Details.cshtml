@@ -1,0 +1,39 @@
+@model HR_PAYROLL_V2.Domain.Entities.DutyRoster
+@{
+    ViewData["Title"] = Model.Name;
+}
+<div class="page-head">
+    <div>
+        <h2>@Model.Name</h2>
+        <p>@Model.Code &middot; @Model.Shift?.Name &middot; @Model.StartDate.ToString("MMM d")&ndash;@Model.EndDate.ToString("MMM d, yyyy")</p>
+    </div>
+    @if (!Model.IsLocked)
+    {
+        <form asp-action="Publish" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Publish this roster and assign shifts to all listed employees?');">
+            <button class="btn btn-primary" type="submit">Publish Roster</button>
+        </form>
+    }
+    else
+    {
+        <span class="status s-success" style="align-self:center">Published @Model.PublishedAt?.ToString("MMM d, yyyy HH:mm")</span>
+    }
+</div>
+
+<div class="notice"><strong>Conflict validation:</strong> Publishing closes out each employee's previous active shift assignment and starts this roster's shift for the selected date range.</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Employee ID</th></tr></thead>
+            <tbody>
+            @foreach (var m in Model.Members)
+            {
+                <tr>
+                    <td>@m.Employee?.FullName</td>
+                    <td>@m.Employee?.EmployeeCode</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

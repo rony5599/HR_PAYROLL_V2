@@ -1,0 +1,122 @@
+@model HR_PAYROLL_V2.Models.Company.MasterDataPageViewModel
+@{
+    ViewData["Title"] = "Master Data";
+}
+<div class="page-head">
+    <div>
+        <h2>Master Data</h2>
+        <p>Designations, grades, employment types, and employee categories used across employee records.</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <select class="control" name="companyId" onchange="this.form.submit()">
+                @foreach (var company in Model.Companies)
+                {
+                    <option value="@company.Id" selected="@(company.Id == Model.SelectedCompanyId)">@company.Name</option>
+                }
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="grid-equal">
+    <div class="panel">
+        <div class="panel-head"><h3>Designations</h3></div>
+        <div class="panel-body">
+            <div class="mini-list" style="margin-bottom:16px">
+                @foreach (var d in Model.Designations)
+                {
+                    <div class="mini-record">
+                        <div><h4>@d.Title</h4><p>@d.Code</p></div>
+                        <form asp-controller="MasterData" asp-action="Deactivate" method="post">
+                            <input type="hidden" name="type" value="designation" /><input type="hidden" name="id" value="@d.Id" /><input type="hidden" name="companyId" value="@Model.SelectedCompanyId" />
+                            <button class="status @(d.IsActive ? "s-success" : "s-neutral")" style="border:0;cursor:pointer" type="submit">@(d.IsActive ? "Active" : "Inactive")</button>
+                        </form>
+                    </div>
+                }
+            </div>
+            <form asp-action="CreateDesignation" method="post" class="form-grid">
+                <input type="hidden" name="CompanyId" value="@Model.SelectedCompanyId" />
+                <div class="field"><label>Title</label><input name="Name" required /></div>
+                <div class="field"><label>Code</label><input name="Code" required /></div>
+                <div class="field full"><button class="btn btn-primary btn-sm" type="submit">+ Add Designation</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head"><h3>Grades</h3></div>
+        <div class="panel-body">
+            <div class="mini-list" style="margin-bottom:16px">
+                @foreach (var g in Model.Grades)
+                {
+                    <div class="mini-record">
+                        <div><h4>@g.Name</h4><p>@g.Code &middot; Level @g.Level</p></div>
+                        <form asp-controller="MasterData" asp-action="Deactivate" method="post">
+                            <input type="hidden" name="type" value="grade" /><input type="hidden" name="id" value="@g.Id" /><input type="hidden" name="companyId" value="@Model.SelectedCompanyId" />
+                            <button class="status @(g.IsActive ? "s-success" : "s-neutral")" style="border:0;cursor:pointer" type="submit">@(g.IsActive ? "Active" : "Inactive")</button>
+                        </form>
+                    </div>
+                }
+            </div>
+            <form asp-action="CreateGrade" method="post" class="form-grid">
+                <input type="hidden" name="CompanyId" value="@Model.SelectedCompanyId" />
+                <div class="field"><label>Name</label><input name="Name" required /></div>
+                <div class="field"><label>Code</label><input name="Code" required /></div>
+                <div class="field"><label>Level</label><input name="Level" type="number" value="1" /></div>
+                <div class="field full"><button class="btn btn-primary btn-sm" type="submit">+ Add Grade</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head"><h3>Employment Types</h3></div>
+        <div class="panel-body">
+            <div class="mini-list" style="margin-bottom:16px">
+                @foreach (var t in Model.EmploymentTypes)
+                {
+                    <div class="mini-record">
+                        <div><h4>@t.Name</h4><p>@t.Code</p></div>
+                        <form asp-controller="MasterData" asp-action="Deactivate" method="post">
+                            <input type="hidden" name="type" value="employmenttype" /><input type="hidden" name="id" value="@t.Id" /><input type="hidden" name="companyId" value="@Model.SelectedCompanyId" />
+                            <button class="status @(t.IsActive ? "s-success" : "s-neutral")" style="border:0;cursor:pointer" type="submit">@(t.IsActive ? "Active" : "Inactive")</button>
+                        </form>
+                    </div>
+                }
+            </div>
+            <form asp-action="CreateEmploymentType" method="post" class="form-grid">
+                <input type="hidden" name="CompanyId" value="@Model.SelectedCompanyId" />
+                <div class="field"><label>Name</label><input name="Name" required /></div>
+                <div class="field"><label>Code</label><input name="Code" required /></div>
+                <div class="field full"><button class="btn btn-primary btn-sm" type="submit">+ Add Employment Type</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head"><h3>Employee Categories</h3></div>
+        <div class="panel-body">
+            <div class="mini-list" style="margin-bottom:16px">
+                @foreach (var c in Model.EmployeeCategories)
+                {
+                    <div class="mini-record">
+                        <div><h4>@c.Name</h4><p>@c.Code</p></div>
+                        <form asp-controller="MasterData" asp-action="Deactivate" method="post">
+                            <input type="hidden" name="type" value="employeecategory" /><input type="hidden" name="id" value="@c.Id" /><input type="hidden" name="companyId" value="@Model.SelectedCompanyId" />
+                            <button class="status @(c.IsActive ? "s-success" : "s-neutral")" style="border:0;cursor:pointer" type="submit">@(c.IsActive ? "Active" : "Inactive")</button>
+                        </form>
+                    </div>
+                }
+            </div>
+            <form asp-action="CreateEmployeeCategory" method="post" class="form-grid">
+                <input type="hidden" name="CompanyId" value="@Model.SelectedCompanyId" />
+                <div class="field"><label>Name</label><input name="Name" required /></div>
+                <div class="field"><label>Code</label><input name="Code" required /></div>
+                <div class="field full"><button class="btn btn-primary btn-sm" type="submit">+ Add Category</button></div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.SalaryComponent>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Salary Components";
+}
+<div class="page-head">
+    <div>
+        <h2>Salary Components</h2>
+        <p>Reusable earning and deduction building blocks used by salary structures.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Component</a>
+</div>
+
+<div class="grid-equal">
+    <div class="panel">
+        <div class="panel-head"><h3>Earning Components</h3></div>
+        <div class="panel-body">
+            @foreach (var c in Model.Where(c => c.Type == SalaryComponentType.Earning))
+            {
+                <div class="policy-card">
+                    <div><h4>@c.Name</h4><p>@(c.Method == SalaryCalculationMethod.PercentageOfBasic ? $"{c.Value}% of basic salary" : $"Fixed {c.Value:C}") &middot; <a asp-action="Edit" asp-route-id="@c.Id">Edit</a></p></div>
+                    <span class="status @(c.IsActive ? "s-success" : "s-neutral")">@(c.IsActive ? "Active" : "Inactive")</span>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-head"><h3>Deduction Components</h3></div>
+        <div class="panel-body">
+            @foreach (var c in Model.Where(c => c.Type == SalaryComponentType.Deduction))
+            {
+                <div class="policy-card">
+                    <div><h4>@c.Name</h4><p>@(c.Method == SalaryCalculationMethod.PercentageOfBasic ? $"{c.Value}% of basic salary" : $"Fixed {c.Value:C}") &middot; <a asp-action="Edit" asp-route-id="@c.Id">Edit</a></p></div>
+                    <span class="status @(c.IsActive ? "s-success" : "s-neutral")">@(c.IsActive ? "Active" : "Inactive")</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

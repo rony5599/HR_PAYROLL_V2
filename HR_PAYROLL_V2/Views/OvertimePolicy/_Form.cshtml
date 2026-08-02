@@ -1,0 +1,16 @@
+@model HR_PAYROLL_V2.Models.Payroll.OvertimePolicyViewModel
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name">Policy name</label><input asp-for="Name" placeholder="Example: Standard Overtime Policy" /></div>
+    <div class="field"><label asp-for="MinOvertimeMinutes"></label><input asp-for="MinOvertimeMinutes" type="number" /></div>
+    <div class="field"><label asp-for="MaxDailyHours"></label><input asp-for="MaxDailyHours" type="number" step="0.5" /></div>
+    <div class="field"><label asp-for="MaxMonthlyHours"></label><input asp-for="MaxMonthlyHours" type="number" step="0.5" /></div>
+    <div class="field"><label asp-for="NormalMultiplier">Normal-day multiplier</label><input asp-for="NormalMultiplier" type="number" step="0.1" /></div>
+    <div class="field"><label asp-for="WeekendMultiplier"></label><input asp-for="WeekendMultiplier" type="number" step="0.1" /></div>
+    <div class="field"><label asp-for="HolidayMultiplier">Paid-holiday multiplier</label><input asp-for="HolidayMultiplier" type="number" step="0.1" /></div>
+    <div class="field"><label asp-for="IsActive">Status</label>
+        <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+    </div>
+    <div class="field full"><label class="check-option"><input asp-for="RequiresApproval" /> Requires manager/HR approval</label></div>
+</div>

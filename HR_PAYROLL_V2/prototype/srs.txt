@@ -1,0 +1,2066 @@
+# Software Requirements Specification
+
+## Multi-Company Human Resource, Attendance, Leave, Payroll, and Organogram Management System
+
+**Document Version:** 1.0
+**Project Status:** Initial Requirements Draft
+**Prepared For:** HR Software Development Project
+**System Type:** Web-Based Multi-Company HRMS
+**Document Date:** July 29, 2026
+
+---
+
+# 1. Introduction
+
+## 1.1 Purpose
+
+The purpose of this Software Requirements Specification is to define the functional and non-functional requirements for a centralized Human Resource Management System.
+
+The system will manage:
+
+* Multiple companies
+* Company-wise departments and organizational structures
+* Employee records
+* Reporting-manager hierarchy
+* Shift policies
+* Attendance
+* Work-hour calculations
+* Leave applications and approvals
+* Overtime
+* Attendance-related deductions
+* Work-hour-related deductions
+* Payroll generation
+* Different payment policies for different employee categories
+* Employee organograms
+* Payslips and payroll reports
+
+This document will serve as the primary reference for business stakeholders, project managers, UI/UX designers, software developers, database developers, quality assurance engineers, and system administrators.
+
+---
+
+# 2. Project Overview
+
+## 2.1 Product Vision
+
+The proposed HRMS will provide a single platform through which an organization can manage employees from multiple companies while maintaining independent company policies, departments, payroll rules, attendance rules, leave policies, reporting structures, and authorization levels.
+
+The system will automatically calculate employee payroll based on:
+
+* Approved attendance records
+* Assigned shift policies
+* Required working hours
+* Actual working hours
+* Late attendance
+* Early departure
+* Absence
+* Approved leave
+* Unpaid leave
+* Overtime
+* Employee payment policy
+* Employment type
+* Department policy
+* Individual employee adjustments
+
+## 2.2 Business Objectives
+
+The system should:
+
+1. Reduce manual HR and payroll processing.
+2. Calculate payroll accurately from attendance data.
+3. Support multiple companies under one software installation.
+4. Support different policies for different employee groups.
+5. Automate leave applications and approval routing.
+6. Generate employee reporting hierarchies and organograms.
+7. Provide complete audit trails for payroll and HR activities.
+8. Improve transparency through employee self-service.
+9. Prevent unauthorized access to employee and payroll information.
+10. Provide management reports for HR, attendance, leave, overtime, and payroll.
+
+---
+
+# 3. Scope
+
+## 3.1 In-Scope Modules
+
+The initial version of the system will include:
+
+1. Multi-Company Management
+2. Department and Organizational Unit Management
+3. Employee Management
+4. Employee Category and Employment Type Management
+5. Reporting Manager Management
+6. Organogram Management
+7. Shift Policy Management
+8. Attendance Management
+9. Attendance Regularization
+10. Holiday and Weekend Management
+11. Leave Policy Management
+12. Leave Application and Approval
+13. Overtime Management
+14. Payroll Policy Management
+15. Salary Structure Management
+16. Attendance-Based Payroll Calculation
+17. Work-Hour-Based Deduction
+18. Payroll Processing and Approval
+19. Payslip Generation
+20. Employee Self-Service
+21. Role and Permission Management
+22. Notifications
+23. Reports and Dashboards
+24. Audit Logs
+25. System Configuration
+
+## 3.2 Potential Future Modules
+
+The following modules may be added in later phases:
+
+* Recruitment and applicant tracking
+* Employee onboarding
+* Performance appraisal
+* Training management
+* Asset management
+* Loan and advance management
+* Provident fund management
+* Gratuity management
+* Travel and expense claims
+* Disciplinary action management
+* Employee separation and final settlement
+* Mobile application
+* Facial-recognition attendance
+* Artificial intelligence-based HR analytics
+
+---
+
+# 4. Stakeholders
+
+The primary stakeholders are:
+
+* Organization owners
+* Group management
+* Company management
+* HR department
+* Finance and accounts department
+* Payroll officers
+* Department heads
+* Reporting managers
+* Attendance administrators
+* IT administrators
+* Employees
+* Contractual workers
+* Auditors
+* Software support team
+
+---
+
+# 5. User Roles
+
+## 5.1 Super Administrator
+
+The Super Administrator will be able to:
+
+* Create and manage companies
+* Configure global system settings
+* Create company administrators
+* View all companies
+* Manage system-wide roles and permissions
+* Access system logs
+* Configure integrations
+* Perform backup and restore operations
+
+## 5.2 Company Administrator
+
+The Company Administrator will be able to:
+
+* Manage the assigned company
+* Create departments and organizational units
+* Assign company-level users
+* Configure company policies
+* View company reports
+* Manage company settings
+
+## 5.3 HR Administrator
+
+The HR Administrator will be able to:
+
+* Create and update employee records
+* Assign employees to departments
+* Assign reporting managers
+* Configure shifts and rosters
+* Configure leave policies
+* Manage attendance corrections
+* Review leave records
+* Generate HR reports
+* View employee organograms
+
+## 5.4 Payroll Officer
+
+The Payroll Officer will be able to:
+
+* Configure payroll structures
+* Review attendance summaries
+* Process payroll
+* Apply authorized adjustments
+* Review salary calculations
+* Generate payslips
+* Export bank payment files
+* Generate payroll reports
+
+## 5.5 Attendance Officer
+
+The Attendance Officer will be able to:
+
+* Import attendance data
+* Review missing attendance
+* Manage attendance corrections
+* Assign shift rosters
+* Generate attendance reports
+* Review late arrival and early departure records
+
+## 5.6 Department Head or Manager
+
+A manager will be able to:
+
+* View direct and indirect subordinates, subject to permission
+* Approve or reject leave applications
+* Approve attendance regularization
+* Approve overtime requests
+* View team attendance
+* View team leave calendars
+* View team organograms
+
+## 5.7 Employee
+
+An employee will be able to:
+
+* View personal profile
+* View attendance
+* View assigned shifts
+* Apply for leave
+* View leave balances
+* Request attendance regularization
+* Submit overtime requests where applicable
+* View payslips
+* View reporting manager
+* View permitted sections of the organogram
+
+## 5.8 Auditor
+
+The Auditor will have read-only access to:
+
+* Payroll calculations
+* Attendance records
+* Leave approvals
+* Policy changes
+* Payroll changes
+* User activity logs
+* Approval histories
+
+---
+
+# 6. Multi-Company Requirements
+
+## 6.1 Company Management
+
+The system shall allow authorized users to create multiple companies.
+
+Each company shall contain its own:
+
+* Company name
+* Company code
+* Registration information
+* Address
+* Contact information
+* Logo
+* Payroll currency
+* Payroll frequency
+* Working calendar
+* Weekend settings
+* Holiday calendar
+* Attendance policies
+* Shift policies
+* Leave policies
+* Overtime policies
+* Payroll policies
+* Salary structures
+* Departments
+* Employees
+* Bank information
+* Accounting configuration
+
+## 6.2 Company Data Isolation
+
+The system shall ensure that users of one company cannot view another company’s data unless they have explicit cross-company permission.
+
+## 6.3 Employee Company Assignment
+
+Each employee shall be assigned to one primary company.
+
+The system may optionally allow an employee to have:
+
+* A secondary company assignment
+* A temporary assignment
+* A project-based assignment
+* An intercompany transfer history
+
+## 6.4 Company Transfer
+
+The system shall support employee transfer from one company to another while preserving:
+
+* Employee history
+* Previous department
+* Previous designation
+* Previous salary
+* Previous reporting manager
+* Transfer effective date
+* Attendance history
+* Leave history
+* Payroll history
+
+---
+
+# 7. Department and Organizational Structure
+
+## 7.1 Department Management
+
+Each company shall be able to create multiple departments, including:
+
+* Human Resources
+* Finance
+* Information Technology
+* Software
+* Operations
+* Administration
+* Production
+* Worker Unit
+* Contractual Workforce Unit
+
+The system shall not limit companies to these department names.
+
+## 7.2 Organizational Unit Levels
+
+The system should support configurable organizational levels such as:
+
+* Company
+* Division
+* Business unit
+* Department
+* Section
+* Team
+* Branch
+* Location
+* Cost center
+
+## 7.3 Department Hierarchy
+
+A department may have:
+
+* A parent department
+* A department head
+* Multiple sub-departments
+* Multiple teams
+* Multiple employees
+* Separate attendance and payroll policies
+
+---
+
+# 8. Employee Management
+
+## 8.1 Employee Profile
+
+The system shall maintain the following information for each employee:
+
+### Personal Information
+
+* Employee ID
+* Employee name
+* Photograph
+* Date of birth
+* Gender, where legally and operationally required
+* Nationality
+* Present address
+* Permanent address
+* Phone number
+* Email address
+* Emergency contact
+* Identification document details
+
+### Employment Information
+
+* Company
+* Branch or location
+* Department
+* Section or team
+* Designation
+* Grade
+* Employment type
+* Employee category
+* Date of joining
+* Confirmation date
+* Contract start date
+* Contract end date
+* Probation period
+* Employee status
+* Reporting manager
+* Secondary or dotted-line manager
+* Cost center
+* Work location
+
+### Payroll Information
+
+* Salary structure
+* Basic salary
+* Allowances
+* Bank account
+* Payment method
+* Payroll group
+* Overtime eligibility
+* Attendance deduction policy
+* Work-hour deduction policy
+* Tax or statutory configuration
+* Loan or advance deductions, when enabled
+
+## 8.2 Employment Types
+
+The system shall support configurable employment types, including:
+
+* Permanent
+* Probationary
+* Contractual
+* Temporary
+* Part-time
+* Daily worker
+* Hourly worker
+* Intern
+* Consultant
+* Project-based employee
+
+## 8.3 Employee Status
+
+The system shall support statuses including:
+
+* Active
+* Inactive
+* On probation
+* Confirmed
+* Suspended
+* On notice
+* Resigned
+* Terminated
+* Retired
+* Contract expired
+* Separated
+
+---
+
+# 9. Policy Assignment and Precedence
+
+The system shall allow policies to be assigned at different levels.
+
+## 9.1 Policy Assignment Levels
+
+Policies may be assigned to:
+
+1. Company
+2. Branch or location
+3. Department
+4. Employee category
+5. Employment type
+6. Grade
+7. Designation
+8. Individual employee
+
+## 9.2 Policy Precedence
+
+Where multiple policies are applicable, the default precedence shall be:
+
+1. Individual employee policy
+2. Designation or grade policy
+3. Employment type or employee category policy
+4. Department policy
+5. Branch policy
+6. Company default policy
+
+The policy precedence shall be configurable by authorized administrators.
+
+## 9.3 Effective-Dated Policies
+
+All policies shall have:
+
+* Effective start date
+* Optional effective end date
+* Version number
+* Approval status
+* Created-by information
+* Change history
+
+Historical payroll shall continue using the policy version applicable to the relevant payroll period.
+
+---
+
+# 10. Shift Management
+
+## 10.1 Supported Shift Types
+
+The system shall support:
+
+* Fixed shift
+* Rotating shift
+* Flexible shift
+* Split shift
+* Overnight shift
+* Weekly roster-based shift
+* Monthly roster-based shift
+* Hourly work schedule
+* No-fixed-shift field employee
+
+## 10.2 Shift Configuration
+
+Each shift may contain:
+
+* Shift name
+* Shift code
+* Start time
+* End time
+* Break duration
+* Paid break duration
+* Unpaid break duration
+* Minimum working hours
+* Full-day working hours
+* Half-day working hours
+* Grace period for late arrival
+* Grace period for early departure
+* Check-in window
+* Check-out window
+* Overtime start threshold
+* Overnight-shift indicator
+* Weekend rules
+* Holiday rules
+
+## 10.3 Shift Assignment
+
+The system shall allow shifts to be assigned to:
+
+* Company
+* Department
+* Employee category
+* Employee group
+* Individual employee
+* Specific roster date
+
+## 10.4 Shift Roster
+
+Authorized users shall be able to:
+
+* Create daily, weekly, and monthly rosters
+* Copy a previous roster
+* Assign shifts in bulk
+* Modify future shifts
+* View roster conflicts
+* Export and import rosters
+* Lock finalized rosters
+
+---
+
+# 11. Attendance Management
+
+## 11.1 Attendance Sources
+
+The system shall support attendance data from:
+
+* Biometric devices
+* Fingerprint devices
+* Facial-recognition devices
+* RFID or access cards
+* Mobile application
+* Web check-in
+* Manual entry
+* Spreadsheet import
+* External API
+
+## 11.2 Attendance Record
+
+Each attendance record shall contain:
+
+* Employee
+* Attendance date
+* Assigned shift
+* First check-in
+* Last check-out
+* Additional check-in and check-out punches
+* Actual working hours
+* Break duration
+* Late duration
+* Early departure duration
+* Overtime duration
+* Attendance status
+* Attendance source
+* Device identifier
+* Location, where enabled
+* Regularization status
+* Approval status
+
+## 11.3 Attendance Statuses
+
+The system shall support:
+
+* Present
+* Absent
+* Late
+* Early departure
+* Half-day
+* On leave
+* Weekly holiday
+* Public holiday
+* Official duty
+* Work from home
+* Training
+* Business travel
+* Missing punch
+* Incomplete attendance
+* Unpaid absence
+
+## 11.4 Attendance Calculation
+
+The system shall calculate attendance by comparing:
+
+* Assigned shift
+* Employee check-in time
+* Employee check-out time
+* Break periods
+* Minimum required working hours
+* Grace periods
+* Approved leave
+* Approved official duty
+* Holiday calendar
+* Weekend calendar
+
+## 11.5 Missing Punch Handling
+
+When an employee has a check-in without a check-out, or a check-out without a check-in, the system shall:
+
+* Mark the attendance as incomplete
+* Prevent automatic full attendance approval, based on policy
+* Allow the employee to request regularization
+* Route the request to the reporting manager
+* Maintain approval history
+
+## 11.6 Attendance Regularization
+
+Employees shall be able to request correction for:
+
+* Missing check-in
+* Missing check-out
+* Incorrect attendance time
+* Incorrect shift
+* Official duty
+* Work from home
+* Device failure
+* Attendance recorded under the wrong date
+
+A regularization request shall contain:
+
+* Original attendance
+* Requested correction
+* Reason
+* Supporting attachment
+* Request date
+* Approval history
+
+---
+
+# 12. Attendance-Based Deduction
+
+## 12.1 Deduction Conditions
+
+The system shall support salary deductions for:
+
+* Full-day absence
+* Half-day absence
+* Unpaid leave
+* Late arrival
+* Early departure
+* Insufficient working hours
+* Missing attendance
+* Unauthorized absence
+* Excessive attendance violations
+
+## 12.2 Deduction Methods
+
+The system shall support configurable deduction methods, including:
+
+* Fixed amount
+* Daily salary rate
+* Hourly salary rate
+* Minute-based rate
+* Percentage of basic salary
+* Percentage of gross salary
+* Number of late occurrences
+* Accumulated late duration
+* Combined late and early-exit duration
+
+## 12.3 Late Deduction Rules
+
+Examples of configurable late policies include:
+
+* First three late arrivals are ignored.
+* Every three late arrivals equal one half-day deduction.
+* Late duration beyond the grace period is deducted by minutes.
+* A late arrival exceeding a configured limit becomes a half-day.
+* A late arrival exceeding another configured limit becomes a full-day absence.
+
+These rules shall be configurable and shall not be hard-coded.
+
+## 12.4 Early Departure Rules
+
+The system shall support:
+
+* Grace period
+* Minute-based deduction
+* Occurrence-based deduction
+* Half-day conversion
+* Manager-approved exemption
+
+## 12.5 No Double Deduction
+
+The system shall prevent duplicate deduction for the same attendance shortage unless a company explicitly enables combined deductions.
+
+For example, if an employee is already deducted for a half-day absence, the same missing hours should not automatically be deducted again through the work-hour deduction calculation.
+
+---
+
+# 13. Work-Hour-Based Deduction
+
+## 13.1 Required Work Hours
+
+Required work hours may be determined from:
+
+* Shift duration
+* Employee contract
+* Daily-hour policy
+* Weekly-hour policy
+* Monthly target hours
+* Employee category
+* Department
+* Individual employee agreement
+
+## 13.2 Actual Work Hours
+
+Actual work hours shall be calculated from:
+
+* Approved attendance
+* Approved attendance corrections
+* Paid breaks
+* Unpaid breaks
+* Approved leave-hour treatment
+* Approved official-duty hours
+
+## 13.3 Work-Hour Shortage
+
+The system shall calculate:
+
+**Work-Hour Shortage = Required Work Hours − Eligible Actual Work Hours**
+
+No shortage shall be generated when eligible actual work hours equal or exceed required work hours.
+
+## 13.4 Work-Hour Deduction Formula
+
+The system shall support formulas such as:
+
+**Hourly Rate = Configured Salary Base ÷ Standard Monthly Hours**
+
+**Work-Hour Deduction = Shortage Hours × Hourly Rate**
+
+The salary base may be configured as:
+
+* Basic salary
+* Gross salary
+* Basic salary plus selected allowances
+* Fixed hourly rate
+* Category-specific hourly rate
+
+## 13.5 Work-Hour Rules
+
+The system shall support:
+
+* Daily shortage calculation
+* Weekly shortage calculation
+* Monthly shortage calculation
+* Grace shortage hours
+* Rounding to configured intervals
+* Maximum monthly deduction
+* Manager-approved exemption
+* Adjustment in the following payroll period
+
+---
+
+# 14. Leave Management
+
+## 14.1 Leave Types
+
+The system shall support configurable leave types such as:
+
+* Annual leave
+* Casual leave
+* Sick leave
+* Maternity leave
+* Paternity leave
+* Unpaid leave
+* Compensatory leave
+* Study leave
+* Bereavement leave
+* Special leave
+* Hourly leave
+
+## 14.2 Leave Policy
+
+Each leave policy may define:
+
+* Eligible employee group
+* Annual entitlement
+* Monthly accrual
+* Joining-date-based prorating
+* Confirmation requirement
+* Minimum service period
+* Maximum consecutive days
+* Minimum application notice
+* Backdated application allowance
+* Carry-forward limit
+* Leave encashment rule
+* Supporting-document requirement
+* Weekend treatment
+* Holiday treatment
+* Half-day permission
+* Hourly-leave permission
+* Negative balance allowance
+* Unpaid conversion rule
+
+## 14.3 Leave Balance
+
+The system shall maintain:
+
+* Opening balance
+* Earned leave
+* Used leave
+* Pending leave
+* Cancelled leave
+* Adjusted leave
+* Carried-forward leave
+* Expired leave
+* Available balance
+
+## 14.4 Leave Application
+
+Employees shall be able to submit leave applications containing:
+
+* Leave type
+* Start date
+* End date
+* Full-day, half-day, or hourly duration
+* Reason
+* Contact information during leave
+* Supporting attachment
+* Handover employee
+* Handover notes
+
+## 14.5 Immediate Manager Approval
+
+A leave application shall automatically be routed to the employee’s immediate reporting manager.
+
+The system shall obtain the immediate reporting manager from the employee reporting hierarchy.
+
+## 14.6 Multi-Level Approval
+
+The system shall support configurable approval levels, such as:
+
+1. Immediate reporting manager
+2. Department head
+3. HR department
+4. Company management
+
+Different leave types may have different approval flows.
+
+## 14.7 Manager Unavailability
+
+When the immediate manager is unavailable, the system shall support:
+
+* Acting manager
+* Delegated approver
+* Escalation after a configured period
+* HR reassignment
+* Approval by the manager’s manager
+
+## 14.8 Leave Actions
+
+Approvers shall be able to:
+
+* Approve
+* Reject
+* Return for correction
+* Request supporting documents
+* Add comments
+
+## 14.9 Leave Cancellation
+
+Employees may request cancellation of approved future leave.
+
+The cancellation request shall follow a configurable approval process.
+
+---
+
+# 15. Overtime Management
+
+## 15.1 Overtime Eligibility
+
+Overtime eligibility may be configured by:
+
+* Company
+* Department
+* Employee category
+* Employment type
+* Grade
+* Designation
+* Individual employee
+
+## 15.2 Overtime Calculation
+
+Overtime may be calculated based on:
+
+* Approved extra working hours
+* Time worked after shift completion
+* Time worked before shift start
+* Weekly holiday work
+* Public holiday work
+* Night shift work
+* Special project work
+
+## 15.3 Overtime Rules
+
+The system shall support:
+
+* Minimum overtime threshold
+* Maximum daily overtime
+* Maximum monthly overtime
+* Overtime rounding interval
+* Overtime pre-approval
+* Overtime post-approval
+* Different rates for working days
+* Different rates for weekends
+* Different rates for public holidays
+* Fixed overtime allowance
+* Hourly overtime payment
+* Compensatory leave instead of payment
+
+## 15.4 Overtime Formula
+
+The system shall support configurable formulas such as:
+
+**Overtime Amount = Approved Overtime Hours × Overtime Hourly Rate**
+
+The overtime hourly rate may be:
+
+* Fixed rate
+* Basic salary-based rate
+* Gross salary-based rate
+* Grade-based rate
+* Employee-category-based rate
+* Day-type-based multiplier
+
+## 15.5 Overtime Approval
+
+Overtime requests may be submitted by:
+
+* Employee
+* Reporting manager
+* Attendance officer
+* HR administrator
+
+Overtime payment shall only be included in payroll after the required approvals are completed.
+
+---
+
+# 16. Payroll Management
+
+## 16.1 Payroll Frequency
+
+The system shall support:
+
+* Monthly payroll
+* Weekly payroll
+* Biweekly payroll
+* Daily-worker payroll
+* Hourly-worker payroll
+* Custom payroll periods
+
+## 16.2 Payroll Groups
+
+Employees may be assigned to payroll groups based on:
+
+* Company
+* Department
+* Location
+* Employee type
+* Payment frequency
+* Salary structure
+* Worker category
+
+## 16.3 Salary Components
+
+### Earnings
+
+The system shall support:
+
+* Basic salary
+* House allowance
+* Medical allowance
+* Transport allowance
+* Food allowance
+* Attendance bonus
+* Overtime
+* Incentive
+* Commission
+* Project allowance
+* Night-shift allowance
+* Holiday allowance
+* Arrear
+* Bonus
+* Custom earnings
+
+### Deductions
+
+The system shall support:
+
+* Absence deduction
+* Late deduction
+* Early-departure deduction
+* Work-hour shortage deduction
+* Unpaid-leave deduction
+* Loan deduction
+* Advance deduction
+* Tax
+* Statutory contribution
+* Penalty
+* Other deduction
+* Custom deductions
+
+## 16.4 Salary Structure
+
+The system shall allow salary structures to be configured for:
+
+* Company
+* Department
+* Employee category
+* Employment type
+* Grade
+* Designation
+* Individual employee
+
+Each salary component shall support:
+
+* Fixed amount
+* Percentage
+* Formula-based calculation
+* Attendance dependency
+* Taxability indicator
+* Proration setting
+* Effective date
+* Maximum and minimum value
+
+## 16.5 Payroll Calculation
+
+The system shall calculate employee payroll using the following general structure:
+
+**Gross Earnings = Basic Salary + Allowances + Overtime + Bonuses + Incentives + Arrears + Other Earnings**
+
+**Total Deductions = Attendance Deductions + Work-Hour Deductions + Unpaid Leave + Loan Deductions + Tax or Statutory Deductions + Other Deductions**
+
+**Net Payable = Gross Earnings − Total Deductions**
+
+The exact formula shall be configurable by company and employee policy.
+
+## 16.6 Payroll Proration
+
+The system shall support salary proration for:
+
+* New joiners
+* Resigned employees
+* Terminated employees
+* Employees with unpaid leave
+* Employees transferred during the period
+* Employees whose salary changed during the period
+* Employees with contract start or end dates within the period
+
+## 16.7 Payroll Processing Workflow
+
+The payroll workflow shall include:
+
+1. Create payroll period
+2. Select company and payroll group
+3. Lock attendance input date
+4. Load attendance summary
+5. Load approved leave
+6. Load approved overtime
+7. Load recurring salary components
+8. Load one-time adjustments
+9. Calculate payroll
+10. Identify errors and exceptions
+11. Review payroll
+12. Approve payroll
+13. Finalize payroll
+14. Generate payslips
+15. Export bank payment data
+16. Export accounting entries
+17. Lock payroll period
+
+## 16.8 Payroll Exceptions
+
+The system shall identify exceptions such as:
+
+* Missing attendance
+* Missing salary structure
+* Missing bank account
+* Negative net salary
+* Unapproved overtime
+* Unapproved leave
+* Overlapping shift assignments
+* Duplicate deductions
+* Unusual salary variation
+* Employee without reporting manager
+* Employee assigned to an inactive department
+
+## 16.9 Payroll Adjustment
+
+Authorized users shall be able to add:
+
+* Additional earnings
+* Additional deductions
+* Attendance corrections
+* Overtime corrections
+* Arrears
+* Retroactive salary adjustments
+
+Every adjustment shall require:
+
+* Adjustment type
+* Amount
+* Reason
+* Effective payroll period
+* User information
+* Approval history
+
+## 16.10 Payroll Locking
+
+After payroll is finalized:
+
+* Payroll data shall become read-only.
+* Changes shall require authorized reopening.
+* Reopening shall generate an audit record.
+* Historical payslips shall remain unchanged unless payroll is officially recalculated.
+
+---
+
+# 17. Different Payment Policies
+
+The system shall support different payment rules for different organizational and employee groups.
+
+Examples include:
+
+## 17.1 Permanent Employees
+
+* Monthly salary
+* Paid leave eligibility
+* Attendance-based deductions
+* Overtime eligibility based on grade
+* Fixed allowances
+
+## 17.2 Contractual Employees
+
+* Fixed monthly payment
+* Daily payment
+* Hourly payment
+* Milestone-based payment
+* Limited leave eligibility
+* Contract period validation
+* Different overtime rules
+
+## 17.3 Workers
+
+* Daily wage
+* Hourly wage
+* Piece-rate payment
+* Shift allowance
+* Overtime payment
+* Attendance bonus
+* Weekly payroll
+
+## 17.4 Software or IT Employees
+
+* Monthly salary
+* Flexible shift
+* Required monthly work hours
+* Work-from-home attendance
+* Project allowance
+* On-call allowance
+
+## 17.5 Department-Specific Rules
+
+Different departments may use different:
+
+* Shift rules
+* Grace periods
+* Overtime policies
+* Attendance bonus policies
+* Work-hour requirements
+* Deduction formulas
+* Leave approval processes
+
+---
+
+# 18. Reporting Hierarchy and Organogram
+
+## 18.1 Reporting Manager Assignment
+
+Each employee shall have:
+
+* One immediate reporting manager
+* Optional secondary or dotted-line manager
+* Effective start date
+* Optional effective end date
+* Reporting relationship type
+
+## 18.2 Hierarchy Validation
+
+The system shall prevent:
+
+* An employee from reporting to themselves
+* Circular reporting relationships
+* Invalid reporting to inactive employees
+* Duplicate active primary managers
+* Reporting to employees outside the permitted company, unless authorized
+
+## 18.3 Organogram Generation
+
+The system shall automatically generate an organogram based on the primary reporting-manager hierarchy.
+
+The organogram shall display:
+
+* Employee photograph
+* Employee name
+* Employee ID
+* Designation
+* Department
+* Company
+* Reporting manager
+* Number of direct reports
+* Employment status
+
+## 18.4 Organogram Views
+
+The system shall support:
+
+* Company-wide organogram
+* Department organogram
+* Team organogram
+* Manager hierarchy
+* Employee reporting chain
+* Upward hierarchy
+* Downward hierarchy
+* Search-based employee view
+
+## 18.5 Organogram Features
+
+Users shall be able to:
+
+* Expand and collapse hierarchy levels
+* Search for an employee
+* Filter by company
+* Filter by department
+* Filter by location
+* View vacant positions, when position management is enabled
+* Export the organogram as PDF or image
+* Print the organogram
+
+Access to salary or confidential information shall not be provided through the organogram unless explicitly authorized.
+
+---
+
+# 19. Employee Self-Service
+
+Employees shall be able to:
+
+* View and update permitted profile information
+* View attendance records
+* View shift schedules
+* View monthly attendance summaries
+* Apply for leave
+* View leave balances
+* Cancel leave requests
+* Submit attendance regularization
+* Submit overtime requests
+* View approval status
+* View salary history, subject to permission
+* Download payslips
+* View reporting hierarchy
+* Receive notifications
+* Change password
+* Update emergency contact information
+
+Sensitive changes may require HR approval.
+
+---
+
+# 20. Manager Self-Service
+
+Managers shall be able to:
+
+* View team members
+* View team attendance
+* View late and absence summaries
+* View team leave calendars
+* Approve leave requests
+* Approve attendance regularization
+* Approve overtime
+* View pending actions
+* Delegate approval authority
+* View direct-report organogram
+* Receive reminders for pending approvals
+
+---
+
+# 21. Notifications
+
+The system shall support notifications through:
+
+* In-application notifications
+* Email
+* SMS, when integrated
+* Mobile push notifications, when a mobile application is available
+
+Notifications shall be generated for:
+
+* Leave application submitted
+* Leave approved or rejected
+* Attendance regularization submitted
+* Attendance regularization approved or rejected
+* Overtime request submitted
+* Overtime approved or rejected
+* Missing attendance
+* Shift assignment
+* Shift change
+* Payroll finalized
+* Payslip available
+* Contract expiry
+* Probation completion
+* Pending manager approval
+* Policy update
+
+Notification templates shall be configurable by company.
+
+---
+
+# 22. Dashboards
+
+## 22.1 Management Dashboard
+
+The management dashboard may show:
+
+* Total employees
+* Active employees
+* Employees by company
+* Employees by department
+* Employees by category
+* Present employees
+* Absent employees
+* Employees on leave
+* Late employees
+* Overtime hours
+* Payroll cost
+* Payroll variance
+* Upcoming contract expirations
+* Employee turnover
+
+## 22.2 HR Dashboard
+
+The HR dashboard may show:
+
+* New joiners
+* Separations
+* Employees on probation
+* Pending profile updates
+* Pending leave requests
+* Pending attendance corrections
+* Attendance exceptions
+* Leave utilization
+* Department headcount
+
+## 22.3 Payroll Dashboard
+
+The payroll dashboard may show:
+
+* Current payroll status
+* Total gross payroll
+* Total deductions
+* Total overtime
+* Total net payable
+* Employees with payroll errors
+* Payroll variation from previous period
+* Pending payroll approvals
+
+## 22.4 Employee Dashboard
+
+The employee dashboard may show:
+
+* Current attendance status
+* Assigned shift
+* Monthly attendance summary
+* Leave balance
+* Pending requests
+* Latest payslip
+* Upcoming holidays
+* Reporting manager
+
+---
+
+# 23. Reports
+
+## 23.1 Employee Reports
+
+* Employee master report
+* Employee contact report
+* Employee by company
+* Employee by department
+* Employee by category
+* Employee by designation
+* Employee joining report
+* Employee separation report
+* Contract-expiry report
+* Probation-completion report
+* Reporting-manager report
+
+## 23.2 Attendance Reports
+
+* Daily attendance report
+* Monthly attendance report
+* Late attendance report
+* Early-departure report
+* Absence report
+* Missing-punch report
+* Work-hour shortage report
+* Shift-wise attendance report
+* Department attendance summary
+* Employee attendance history
+* Attendance regularization report
+
+## 23.3 Leave Reports
+
+* Leave balance report
+* Leave utilization report
+* Leave application report
+* Approved leave report
+* Rejected leave report
+* Pending leave report
+* Department leave calendar
+* Unpaid leave report
+
+## 23.4 Overtime Reports
+
+* Employee overtime report
+* Department overtime report
+* Approved overtime report
+* Pending overtime report
+* Overtime cost report
+* Holiday overtime report
+
+## 23.5 Payroll Reports
+
+* Payroll summary
+* Payroll register
+* Employee salary sheet
+* Department payroll cost
+* Company payroll cost
+* Earnings report
+* Deduction report
+* Attendance deduction report
+* Work-hour deduction report
+* Overtime payment report
+* Bank transfer report
+* Payslip report
+* Payroll variance report
+* Payroll adjustment report
+
+## 23.6 Organogram Reports
+
+* Company hierarchy
+* Department hierarchy
+* Manager and direct-report list
+* Employees without managers
+* Managers without departments
+* Reporting-hierarchy exception report
+
+## 23.7 Report Export
+
+Reports shall be exportable to:
+
+* PDF
+* Spreadsheet
+* CSV
+* Printable format
+
+---
+
+# 24. Search and Filtering
+
+The system shall provide search and filtering using:
+
+* Employee name
+* Employee ID
+* Company
+* Department
+* Designation
+* Reporting manager
+* Employee category
+* Employment type
+* Date range
+* Attendance status
+* Leave status
+* Payroll period
+* Approval status
+
+---
+
+# 25. Audit Trail
+
+The system shall maintain audit logs for:
+
+* Employee creation and modification
+* Salary changes
+* Policy changes
+* Shift changes
+* Attendance changes
+* Leave approval actions
+* Overtime approval actions
+* Payroll adjustments
+* Payroll approval
+* Payroll reopening
+* Role and permission changes
+* User login activity
+* Data exports
+
+Each audit record shall include:
+
+* User
+* Date and time
+* Action
+* Module
+* Previous value
+* New value
+* IP address, where available
+* Device or browser information
+* Reason, when required
+
+Audit records shall not be editable by ordinary users.
+
+---
+
+# 26. Role-Based Access Control
+
+The system shall use role-based permissions.
+
+Permissions shall be configurable for:
+
+* View
+* Create
+* Edit
+* Delete
+* Approve
+* Reject
+* Export
+* Import
+* Finalize
+* Reopen
+* View salary
+* View personal data
+* View audit logs
+
+Permissions may be restricted by:
+
+* Company
+* Branch
+* Department
+* Reporting hierarchy
+* Employee group
+* Individual employee
+
+Managers shall only view employees within their authorized reporting hierarchy unless additional permission is granted.
+
+---
+
+# 27. Data Import and Export
+
+The system shall support bulk import for:
+
+* Companies
+* Departments
+* Employees
+* Salary structures
+* Shift assignments
+* Attendance
+* Leave balances
+* Opening payroll information
+* Bank information
+
+The system shall:
+
+* Validate imported files
+* Display row-level errors
+* Prevent duplicate employee IDs
+* Allow valid rows to be processed
+* Provide an import result summary
+* Maintain import history
+
+---
+
+# 28. Integration Requirements
+
+## 28.1 Attendance Device Integration
+
+The system should provide APIs or connectors for attendance devices.
+
+The integration should support:
+
+* Employee synchronization
+* Attendance punch collection
+* Device mapping
+* Multiple devices
+* Multiple locations
+* Duplicate-punch prevention
+
+## 28.2 Accounting Integration
+
+The system may export payroll journal entries containing:
+
+* Company
+* Cost center
+* Department
+* Account code
+* Debit amount
+* Credit amount
+* Payroll period
+
+## 28.3 Bank Integration
+
+The system may generate bank-payment files containing:
+
+* Employee name
+* Bank account
+* Bank name
+* Branch
+* Routing information
+* Net payable amount
+* Payment reference
+
+## 28.4 Email and SMS Integration
+
+The system should support configurable email and SMS providers.
+
+## 28.5 API
+
+The system should provide secure APIs for approved external applications.
+
+---
+
+# 29. Non-Functional Requirements
+
+## 29.1 Performance
+
+* Standard pages should load within three seconds under normal operating conditions.
+* Employee search results should appear within three seconds.
+* Attendance reports should be generated within an acceptable period based on data volume.
+* Payroll processing should support bulk calculation without requiring employee-by-employee processing.
+* The system should support background job processing for large imports and calculations.
+
+## 29.2 Scalability
+
+The architecture should support:
+
+* Multiple companies
+* Hundreds of departments
+* Thousands of employees
+* Millions of attendance records
+* Multiple payroll periods
+* Future mobile and API integrations
+
+## 29.3 Availability
+
+The production system should target high availability based on the hosting agreement.
+
+Planned maintenance should be communicated to administrators.
+
+## 29.4 Security
+
+The system shall provide:
+
+* Secure authentication
+* Password complexity rules
+* Password hashing
+* Role-based authorization
+* Session timeout
+* Account lockout
+* Optional multi-factor authentication
+* Secure API authentication
+* Encryption during data transmission
+* Protection against common web vulnerabilities
+* Restricted access to salary and personal information
+
+## 29.5 Data Privacy
+
+The system shall:
+
+* Limit personal-data access
+* Record sensitive-data access
+* Allow configurable data-retention rules
+* Support secure employee-data export
+* Support authorized anonymization or deletion where applicable
+
+## 29.6 Backup and Recovery
+
+The system shall support:
+
+* Automated database backup
+* Configurable backup frequency
+* Off-site or secondary-location backup
+* Backup restoration testing
+* Disaster-recovery procedures
+* Recovery-point and recovery-time targets defined during deployment
+
+## 29.7 Reliability
+
+Payroll calculations shall be deterministic. The same approved input and policy version shall produce the same payroll result.
+
+## 29.8 Usability
+
+The system shall:
+
+* Provide responsive layouts
+* Use clear navigation
+* Display understandable validation messages
+* Provide searchable dropdowns
+* Support keyboard-friendly data entry
+* Show approval status clearly
+* Provide dashboards appropriate to each role
+
+## 29.9 Browser Compatibility
+
+The web application should support the latest stable versions of major browsers, including:
+
+* Google Chrome
+* Microsoft Edge
+* Mozilla Firefox
+* Safari, where required
+
+## 29.10 Localization
+
+The system should support:
+
+* Multiple languages
+* Configurable date formats
+* Configurable time formats
+* Configurable currency
+* Configurable number formats
+* Company-specific time zones
+* English and Bangla interfaces as a potential deployment requirement
+
+---
+
+# 30. Core Data Entities
+
+The proposed database shall include entities such as:
+
+* Company
+* Branch
+* Location
+* Department
+* OrganizationalUnit
+* Designation
+* Grade
+* Position
+* Employee
+* EmployeeEmploymentHistory
+* EmployeeReportingManager
+* EmployeeCategory
+* EmploymentType
+* Shift
+* ShiftRoster
+* Holiday
+* WeekendPolicy
+* Attendance
+* AttendancePunch
+* AttendanceRegularization
+* LeaveType
+* LeavePolicy
+* EmployeeLeaveBalance
+* LeaveApplication
+* LeaveApproval
+* OvertimePolicy
+* OvertimeRequest
+* SalaryStructure
+* SalaryComponent
+* EmployeeSalary
+* PayrollGroup
+* PayrollPeriod
+* Payroll
+* PayrollDetail
+* PayrollEarning
+* PayrollDeduction
+* PayrollAdjustment
+* Payslip
+* BankAccount
+* ApprovalWorkflow
+* ApprovalStep
+* Notification
+* User
+* Role
+* Permission
+* AuditLog
+* Attachment
+
+---
+
+# 31. Key Business Rules
+
+1. Every active employee must belong to a company.
+2. Every active employee should belong to a department or organizational unit.
+3. Every employee should have an immediate reporting manager unless the employee is at the top of the organizational hierarchy.
+4. An employee cannot report to themselves.
+5. Circular reporting relationships shall not be permitted.
+6. Leave requests shall be routed according to the employee’s active reporting relationship.
+7. Payroll shall only include approved attendance corrections, leave, and overtime.
+8. Finalized payroll shall not be editable without reopening authorization.
+9. Policy changes shall be effective-dated.
+10. Historical payroll shall retain its original calculation basis.
+11. Attendance and work-hour deductions shall not be duplicated unless explicitly configured.
+12. Employees shall not be assigned overlapping active primary shifts unless the policy permits split shifts.
+13. Leave balance shall be checked before approval unless negative balance or unpaid conversion is allowed.
+14. Inactive employees shall not be included in future payroll unless final settlement or special processing is enabled.
+15. Salary changes shall require effective dates and authorization.
+16. Sensitive salary information shall only be visible to authorized users.
+17. Payroll processing shall display exceptions before finalization.
+18. Company data shall be logically isolated.
+19. Manual attendance changes shall require a reason.
+20. Payroll adjustments shall maintain complete approval and audit history.
+
+---
+
+# 32. Approval Workflow Requirements
+
+The system shall provide a configurable workflow engine.
+
+Workflows may be configured for:
+
+* Leave
+* Attendance regularization
+* Overtime
+* Salary change
+* Payroll adjustment
+* Payroll finalization
+* Employee transfer
+* Employee separation
+
+Workflow conditions may depend on:
+
+* Company
+* Department
+* Employee category
+* Employment type
+* Leave type
+* Request duration
+* Amount
+* Reporting hierarchy
+* Designation
+* Grade
+
+The workflow engine shall support:
+
+* Sequential approval
+* Parallel approval
+* Any-one approval
+* All-approver approval
+* Escalation
+* Delegation
+* Rejection
+* Return for correction
+* Approval comments
+
+---
+
+# 33. Primary System Workflows
+
+## 33.1 Employee Creation Workflow
+
+1. HR creates an employee record.
+2. HR assigns the company.
+3. HR assigns the department.
+4. HR assigns designation and employee category.
+5. HR assigns the reporting manager.
+6. HR assigns shift and policies.
+7. Payroll assigns salary structure.
+8. The system creates the employee user account.
+9. The employee receives an activation notification.
+
+## 33.2 Leave Workflow
+
+1. Employee opens the leave application.
+2. Employee selects the leave type and dates.
+3. The system checks eligibility and balance.
+4. Employee submits the request.
+5. The system identifies the immediate reporting manager.
+6. The manager receives a notification.
+7. The manager approves, rejects, or returns the request.
+8. Additional approval levels are processed where required.
+9. The leave balance is updated after final approval.
+10. Attendance and payroll receive the approved leave data.
+
+## 33.3 Attendance-to-Payroll Workflow
+
+1. Employee attendance is collected.
+2. The assigned shift is identified.
+3. Working hours are calculated.
+4. Late arrival and early departure are calculated.
+5. Leave and holidays are applied.
+6. Attendance exceptions are generated.
+7. Corrections are submitted and approved.
+8. Attendance is locked for payroll.
+9. Attendance deductions are calculated.
+10. Work-hour shortages are calculated.
+11. Approved overtime is calculated.
+12. Payroll is generated.
+13. Payroll is reviewed and approved.
+14. Payslips are generated.
+
+## 33.4 Organogram Workflow
+
+1. HR assigns a reporting manager to each employee.
+2. The system validates the hierarchy.
+3. The hierarchy is saved with an effective date.
+4. The organogram is generated automatically.
+5. Changes to reporting relationships update the future organogram while preserving historical relationships.
+
+---
+
+# 34. Acceptance Criteria
+
+The system will be considered acceptable for the first production release when the following conditions are satisfied:
+
+1. Administrators can create and manage multiple companies.
+2. Each company can maintain separate departments and policies.
+3. HR can create employees and assign reporting managers.
+4. The system can prevent circular reporting hierarchies.
+5. The system can generate a visual organogram.
+6. HR can configure multiple shifts.
+7. Attendance can be imported or entered manually.
+8. The system can calculate late arrival, early departure, absence, and working hours.
+9. Employees can apply for leave.
+10. Leave applications are routed to immediate reporting managers.
+11. Managers can approve or reject leave.
+12. Approved leave updates attendance and payroll calculations.
+13. Overtime can be configured and approved.
+14. Payroll can be generated from attendance, leave, overtime, and salary structures.
+15. Attendance-based deductions can be calculated.
+16. Work-hour-based deductions can be calculated.
+17. Different payment policies can be assigned to different employee categories.
+18. Payroll can be reviewed, approved, finalized, and locked.
+19. Employees can view and download payslips.
+20. Authorized users can generate HR, attendance, leave, overtime, and payroll reports.
+21. Company data access is restricted according to permissions.
+22. All critical changes are recorded in the audit log.
+23. Historical payroll calculations remain available.
+24. Reports can be exported.
+25. The system performs correctly for the agreed employee and attendance volume.
+
+---
+
+# 35. Assumptions
+
+1. Every company will nominate authorized HR and payroll users.
+2. Employee reporting-manager information will be maintained accurately.
+3. Shift, leave, attendance, overtime, and payroll policies will be supplied by the business before final configuration.
+4. Statutory payroll rules will be configured according to the operating jurisdiction.
+5. Attendance devices will provide usable employee identifiers and timestamps.
+6. Bank and accounting integrations will depend on the format supported by the relevant third parties.
+7. The system will use effective dates to preserve historical data.
+8. The final technology stack and hosting infrastructure will be selected during technical design.
+
+---
+
+# 36. Constraints
+
+1. Payroll accuracy depends on accurate attendance, leave, overtime, and salary information.
+2. Attendance-device integration may vary by manufacturer.
+3. Country-specific statutory calculations may require separate configuration or customization.
+4. Historical data migration quality depends on the source data supplied.
+5. Complex contractual or piece-rate payment rules may require additional configuration.
+6. The system shall not calculate deductions that violate configured company rules or applicable legal requirements.
+
+---
+
+# 37. Recommended Phase-One Deliverables
+
+The first implementation phase should include:
+
+1. Multi-company setup
+2. Department management
+3. Employee management
+4. Reporting-manager hierarchy
+5. Organogram
+6. Shift management
+7. Attendance import and calculation
+8. Leave application and manager approval
+9. Overtime approval
+10. Salary structure
+11. Attendance-based deductions
+12. Work-hour-based deductions
+13. Payroll processing
+14. Payslips
+15. Core reports
+16. Role-based permissions
+17. Audit logging
+
+---
+
+# 38. Recommended Phase-Two Deliverables
+
+The second implementation phase may include:
+
+1. Biometric device synchronization
+2. Mobile employee self-service
+3. Bank integration
+4. Accounting integration
+5. Loan and advance management
+6. Final settlement
+7. Recruitment
+8. Performance management
+9. Asset management
+10. Advanced HR analytics
+11. Bangla interface
+12. Custom workflow designer
+
+---
+
+# 39. Conclusion
+
+The proposed system will provide a centralized and configurable HR platform for managing employees across multiple companies and departments.
+
+Its core strength will be the integration between:
+
+* Employee information
+* Reporting hierarchy
+* Shift policies
+* Attendance
+* Leave
+* Overtime
+* Work-hour requirements
+* Salary structures
+* Payroll calculations
+
+The system will accommodate permanent employees, contractual employees, workers, hourly employees, and other employee categories with different payment and deduction policies.
+
+Payroll will be generated using approved and traceable HR data, while the reporting-manager hierarchy will control leave approvals and automatically generate the organizational organogram.

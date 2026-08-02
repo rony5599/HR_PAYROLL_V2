@@ -1,0 +1,52 @@
+@model HR_PAYROLL_V2.Models.Shared.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="page-head">
+    <div>
+        <h2>Good day, @User.Identity!.Name</h2>
+        <p>Here is your workforce overview.</p>
+    </div>
+</div>
+
+<div class="cards">
+    <div class="metric">
+        <div class="metric-top"><span class="metric-icon">&#9737;</span></div>
+        <h3>@Model.TotalCompanies</h3><p>Companies</p>
+    </div>
+    <div class="metric">
+        <div class="metric-top"><span class="metric-icon">&#128101;</span></div>
+        <h3>@Model.TotalEmployees</h3><p>Total employees</p>
+    </div>
+    <div class="metric">
+        <div class="metric-top"><span class="metric-icon">&#9989;</span></div>
+        <h3>@Model.ActiveEmployees</h3><p>Active employees</p>
+    </div>
+    <div class="metric">
+        <div class="metric-top"><span class="metric-icon">&#9776;</span></div>
+        <h3>@Model.TotalDepartments</h3><p>Departments</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-head"><div><h3>Employees by department</h3></div></div>
+    <div class="panel-body bars">
+        @if (!Model.EmployeesByDepartment.Any())
+        {
+            <p style="color:var(--muted)">No departments configured yet.</p>
+        }
+        else
+        {
+            var max = Math.Max(1, Model.EmployeesByDepartment.Max(d => d.Count));
+            foreach (var dept in Model.EmployeesByDepartment)
+            {
+                var pct = (int)Math.Round(dept.Count * 100.0 / max);
+                <div class="bar-row">
+                    <span>@dept.Name</span>
+                    <div class="bar-track"><div class="bar-fill" style="width:@(pct)%"></div></div>
+                    <strong>@dept.Count</strong>
+                </div>
+            }
+        }
+    </div>
+</div>

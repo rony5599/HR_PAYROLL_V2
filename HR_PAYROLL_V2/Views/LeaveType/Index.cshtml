@@ -1,0 +1,33 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.LeaveType>
+@{
+    ViewData["Title"] = "Leave Types";
+}
+<div class="page-head">
+    <div>
+        <h2>Leave Types &amp; Policies</h2>
+        <p>Configure leave entitlements, notice periods, and attachment rules.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Leave Type</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Leave Type</th><th>Code</th><th>Entitlement</th><th>Max Consecutive</th><th>Notice</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var lt in Model)
+            {
+                <tr>
+                    <td><strong>@lt.Name</strong></td>
+                    <td>@lt.Code</td>
+                    <td>@lt.AnnualEntitlementDays days/year</td>
+                    <td>@lt.MaxConsecutiveDays days</td>
+                    <td>@lt.AdvanceNoticeDays days</td>
+                    <td><span class="status @(lt.IsActive ? "s-success" : "s-neutral")">@(lt.IsActive ? "Active" : "Inactive")</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@lt.Id">Edit</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

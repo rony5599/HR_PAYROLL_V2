@@ -1,0 +1,136 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    bool IsActive(params string[] names) => names.Contains(controller, StringComparer.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PeopleFlow HRMS</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-mark">PF</div>
+            <div>
+                <h1>PeopleFlow HRMS</h1>
+                <span>Enterprise workforce suite</span>
+            </div>
+        </div>
+
+        <div class="nav-title">Workspace</div>
+        <a class="nav-item @(IsActive("Dashboard","Home") ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9679;</span>Dashboard</span>
+        </a>
+        <a class="nav-item @(IsActive("Employee") ? "active" : "")" asp-controller="Employee" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#128101;</span>Employees</span>
+        </a>
+        <a class="nav-item @(IsActive("Department") ? "active" : "")" asp-controller="Department" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9776;</span>Departments</span>
+        </a>
+        <a class="nav-item @(IsActive("Organogram") ? "active" : "")" asp-controller="Organogram" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9737;</span>Organogram</span>
+        </a>
+        <a class="nav-item @(IsActive("Attendance") ? "active" : "")" asp-controller="Attendance" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9203;</span>Attendance</span>
+        </a>
+        <a class="nav-item @(IsActive("AttendanceRegularization") ? "active" : "")" asp-controller="AttendanceRegularization" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9998;</span>Regularization</span>
+        </a>
+        <a class="nav-item @(IsActive("Leave") ? "active" : "")" asp-controller="Leave" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#128197;</span>Leave</span>
+        </a>
+        <a class="nav-item @(IsActive("Overtime") ? "active" : "")" asp-controller="Overtime" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9203;</span>Overtime</span>
+        </a>
+        <a class="nav-item @(IsActive("PayrollPeriod") || IsActive("Payroll") ? "active" : "")" asp-controller="PayrollPeriod" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">$</span>Payroll</span>
+        </a>
+        <a class="nav-item @(IsActive("Reports") ? "active" : "")" asp-controller="Reports" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#128202;</span>Reports</span>
+        </a>
+
+        <div class="nav-title">Configuration</div>
+        <a class="nav-item @(IsActive("Company") ? "active" : "")" asp-controller="Company" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">$</span>Companies</span>
+        </a>
+        <a class="nav-item @(IsActive("SalaryComponent") ? "active" : "")" asp-controller="SalaryComponent" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#177;</span>Salary Components</span>
+        </a>
+        <a class="nav-item @(IsActive("SalaryStructure") ? "active" : "")" asp-controller="SalaryStructure" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9636;</span>Salary Structures</span>
+        </a>
+        <a class="nav-item @(IsActive("OvertimePolicy") ? "active" : "")" asp-controller="OvertimePolicy" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9201;</span>Overtime Policies</span>
+        </a>
+        <a class="nav-item @(IsActive("MasterData") ? "active" : "")" asp-controller="MasterData" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9776;</span>Master Data</span>
+        </a>
+        <a class="nav-item @(IsActive("Shift") ? "active" : "")" asp-controller="Shift" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9201;</span>Shifts</span>
+        </a>
+        <a class="nav-item @(IsActive("DutyRoster") ? "active" : "")" asp-controller="DutyRoster" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#128197;</span>Duty Roster</span>
+        </a>
+        <a class="nav-item @(IsActive("Holiday") ? "active" : "")" asp-controller="Holiday" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#9729;</span>Holidays</span>
+        </a>
+        <a class="nav-item @(IsActive("LeaveType") ? "active" : "")" asp-controller="LeaveType" asp-action="Index">
+            <span class="nav-left"><span class="nav-icon">&#128197;</span>Leave Types</span>
+        </a>
+        <a class="nav-item @(IsActive("Account") ? "active" : "")" asp-controller="Account" asp-action="Users">
+            <span class="nav-left"><span class="nav-icon">&#128100;</span>Users &amp; Roles</span>
+        </a>
+
+        <div class="sidebar-footer">
+            <strong>Signed in as</strong>
+            <span>@(User?.Identity?.Name ?? "Guest")</span>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle">&#9776;</button>
+                <strong>@ViewData["Title"]</strong>
+            </div>
+            <div class="top-actions">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <div class="profile">
+                        <div class="avatar">@(User.Identity.Name!.Length > 0 ? User.Identity.Name.Substring(0, 1).ToUpper() : "?")</div>
+                        <div><strong>@User.Identity.Name</strong><small>@User.FindFirst("CompanyName")?.Value</small></div>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button class="btn btn-outline btn-sm" type="submit">Sign out</button>
+                    </form>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+                }
+            </div>
+        </header>
+
+        <section class="content">
+            @if (TempData["Success"] is string success)
+            {
+                <div class="notice">@success</div>
+            }
+            @if (TempData["Error"] is string error)
+            {
+                <div class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c">@error</div>
+            }
+            @RenderBody()
+        </section>
+    </main>
+</div>
+
+@await Html.PartialAsync("_ValidationScriptsPartial")
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

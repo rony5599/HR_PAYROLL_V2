@@ -1,0 +1,23 @@
+@model HR_PAYROLL_V2.Models.Employee.EmployeeViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="EmployeeCode">Employee ID</label><input asp-for="EmployeeCode" placeholder="EMP-0001" /></div>
+    <div class="field"><label asp-for="FirstName"></label><input asp-for="FirstName" /></div>
+    <div class="field"><label asp-for="LastName"></label><input asp-for="LastName" /></div>
+    <div class="field"><label asp-for="Email"></label><input asp-for="Email" /></div>
+    <div class="field"><label asp-for="Phone"></label><input asp-for="Phone" /></div>
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="OrganizationalUnitId">Department</label><select asp-for="OrganizationalUnitId" asp-items="ViewBag.Departments"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="DesignationId"></label><select asp-for="DesignationId" asp-items="ViewBag.Designations"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="GradeId"></label><select asp-for="GradeId" asp-items="ViewBag.Grades"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="EmploymentTypeId"></label><select asp-for="EmploymentTypeId" asp-items="ViewBag.EmploymentTypes"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="EmployeeCategoryId"></label><select asp-for="EmployeeCategoryId" asp-items="ViewBag.EmployeeCategories"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="ReportingManagerId">Immediate manager</label><select asp-for="ReportingManagerId" asp-items="ViewBag.Managers"><option value="">No manager (top of hierarchy)</option></select></div>
+    <div class="field"><label asp-for="ShiftId">Shift</label><select asp-for="ShiftId" asp-items="ViewBag.Shifts"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="SalaryStructureId">Salary structure</label><select asp-for="SalaryStructureId" asp-items="ViewBag.SalaryStructures"><option value="">Not assigned</option></select></div>
+    <div class="field"><label asp-for="BasicSalary"></label><input asp-for="BasicSalary" type="number" step="0.01" /></div>
+    <div class="field"><label asp-for="DateOfJoining"></label><input asp-for="DateOfJoining" type="date" /></div>
+    <div class="field"><label asp-for="Status"></label><select asp-for="Status" asp-items="Html.GetEnumSelectList<EmployeeStatus>()"></select></div>
+    <div class="field"><label asp-for="WorkLocation"></label><input asp-for="WorkLocation" /></div>
+</div>

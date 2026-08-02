@@ -1,0 +1,34 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Shift>
+@{
+    ViewData["Title"] = "Shifts";
+}
+<div class="page-head">
+    <div>
+        <h2>Shift Policies</h2>
+        <p>Fixed, flexible, rotating, and overnight shift definitions used for attendance and payroll.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Shift</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Shift</th><th>Type</th><th>Timing</th><th>Required Hours</th><th>Late Grace</th><th>Company</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var shift in Model)
+            {
+                <tr>
+                    <td><strong>@shift.Name</strong><br /><small>@shift.Code</small></td>
+                    <td>@shift.Type</td>
+                    <td>@shift.StartTime.ToString("HH:mm")&ndash;@shift.EndTime.ToString("HH:mm")</td>
+                    <td>@shift.RequiredHours h</td>
+                    <td>@shift.LateGraceMinutes min</td>
+                    <td>@shift.Company?.Name</td>
+                    <td><span class="status @(shift.IsActive ? "s-success" : "s-neutral")">@(shift.IsActive ? "Active" : "Inactive")</span></td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@shift.Id">Edit</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

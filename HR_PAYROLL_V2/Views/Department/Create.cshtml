@@ -1,0 +1,32 @@
+@model HR_PAYROLL_V2.Models.Department.DepartmentViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Add Department";
+}
+<div class="page-head">
+    <div><h2>Add Department</h2><p>Create a department, division, section, or team.</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+                <div class="field"><label asp-for="Name"></label><input asp-for="Name" placeholder="Example: Software Engineering" /></div>
+                <div class="field"><label asp-for="Code"></label><input asp-for="Code" placeholder="DEPT-SWE" /></div>
+                <div class="field"><label asp-for="Level"></label><select asp-for="Level" asp-items="Html.GetEnumSelectList<OrganizationalUnitLevel>()"></select></div>
+                <div class="field"><label asp-for="ParentUnitId">Parent unit</label><select asp-for="ParentUnitId" asp-items="ViewBag.ParentUnits"><option value="">No parent / top level</option></select></div>
+                <div class="field"><label asp-for="CostCenter"></label><input asp-for="CostCenter" placeholder="CC-1004" /></div>
+                <div class="field"><label asp-for="IsActive">Status</label>
+                    <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+                </div>
+                <div class="field full"><label asp-for="Description"></label><textarea asp-for="Description"></textarea></div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Department</button>
+            </div>
+        </form>
+    </div>
+</div>

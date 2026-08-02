@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="page-head">
+    <div><h2>Reports</h2><p>Generate HR, attendance, leave, and payroll reports. Each report can be exported to CSV.</p></div>
+</div>
+<div class="cards">
+    <a class="metric" style="text-align:left;text-decoration:none;color:inherit" asp-action="Employees">
+        <span class="metric-icon">&#128101;</span><h3 style="font-size:17px">Employee Report</h3><p>Master list with department, designation, and status</p>
+    </a>
+    <a class="metric" style="text-align:left;text-decoration:none;color:inherit" asp-action="Attendance">
+        <span class="metric-icon">&#9203;</span><h3 style="font-size:17px">Attendance Report</h3><p>Daily attendance for a selected date range</p>
+    </a>
+    <a class="metric" style="text-align:left;text-decoration:none;color:inherit" asp-action="Leave">
+        <span class="metric-icon">&#128197;</span><h3 style="font-size:17px">Leave Report</h3><p>Applications filtered by date range and status</p>
+    </a>
+    <a class="metric" style="text-align:left;text-decoration:none;color:inherit" asp-action="Payroll">
+        <span class="metric-icon">$</span><h3 style="font-size:17px">Payroll Report</h3><p>Full breakdown for a finalized or draft payroll period</p>
+    </a>
+</div>

@@ -1,0 +1,13 @@
+@model HR_PAYROLL_V2.Models.Company.HolidayViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name">Holiday name</label><input asp-for="Name" placeholder="Example: National Holiday" /></div>
+    <div class="field"><label asp-for="Date">Holiday date</label><input asp-for="Date" type="date" /></div>
+    <div class="field"><label asp-for="Type">Holiday type</label><select asp-for="Type" asp-items="Html.GetEnumSelectList<HolidayType>()"></select></div>
+    <div class="field"><label asp-for="IsActive">Status</label>
+        <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+    </div>
+    <div class="field full"><label asp-for="Description"></label><textarea asp-for="Description"></textarea></div>
+</div>

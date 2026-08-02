@@ -1,0 +1,121 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace HR_PAYROLL_V2.Infrastructure.Persistence.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddLeaveManagement : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "LeaveTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    AnnualEntitlementDays = table.Column<decimal>(type: "numeric(6,2)", nullable: false),
+                    MaxConsecutiveDays = table.Column<int>(type: "integer", nullable: false),
+                    AdvanceNoticeDays = table.Column<int>(type: "integer", nullable: false),
+                    RequiresAttachment = table.Column<bool>(type: "boolean", nullable: false),
+                    ExcludeWeekends = table.Column<bool>(type: "boolean", nullable: false),
+                    ExcludeHolidays = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaveTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LeaveTypes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LeaveApplications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LeaveTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Days = table.Column<decimal>(type: "numeric(6,2)", nullable: false),
+                    Reason = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    ApproverId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DecidedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DecisionComment = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaveApplications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LeaveApplications_Employees_ApproverId",
+                        column: x => x.ApproverId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LeaveApplications_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LeaveApplications_LeaveTypes_LeaveTypeId",
+                        column: x => x.LeaveTypeId,
+                        principalTable: "LeaveTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveApplications_ApproverId",
+                table: "LeaveApplications",
+                column: "ApproverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveApplications_EmployeeId",
+                table: "LeaveApplications",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveApplications_LeaveTypeId",
+                table: "LeaveApplications",
+                column: "LeaveTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveTypes_CompanyId",
+                table: "LeaveTypes",
+                column: "CompanyId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "LeaveApplications");
+
+            migrationBuilder.DropTable(
+                name: "LeaveTypes");
+        }
+    }
+}

@@ -1,0 +1,39 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Holiday>
+@{
+    ViewData["Title"] = "Holiday Calendar";
+}
+<div class="page-head">
+    <div>
+        <h2>Holiday Calendar</h2>
+        <p>Paid holidays are protected days: no attendance punch is required and no salary or work-hour deduction is applied.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Holiday</a>
+</div>
+
+<div class="notice">Paid holidays combined with each company's weekend policy automatically mark attendance as "Holiday" with zero deductions.</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Holiday</th><th>Date</th><th>Type</th><th>Company</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td><strong>@h.Name</strong></td>
+                    <td>@h.Date.ToString("MMM d, yyyy")</td>
+                    <td>@h.Type</td>
+                    <td>@h.Company?.Name</td>
+                    <td><span class="status @(h.IsActive ? "s-success" : "s-neutral")">@(h.IsActive ? "Active" : "Inactive")</span></td>
+                    <td>
+                        <a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@h.Id">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@h.Id" method="post" style="display:inline">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this holiday?');">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

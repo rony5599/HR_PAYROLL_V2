@@ -1,0 +1,30 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Employee>
+@{
+    ViewData["Title"] = "Employee Report";
+}
+<div class="page-head">
+    <div><h2>Employee Report</h2><p>@Model.Count employee(s) across all companies.</p></div>
+    <a class="btn btn-outline" asp-action="Employees" asp-route-export="true">Export CSV</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Company</th><th>Department</th><th>Designation</th><th>Employment Type</th><th>Status</th><th>Date of Joining</th></tr></thead>
+            <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td>@e.FullName<br /><small>@e.EmployeeCode</small></td>
+                    <td>@e.Company?.Name</td>
+                    <td>@(e.OrganizationalUnit?.Name ?? "—")</td>
+                    <td>@(e.Designation?.Title ?? "—")</td>
+                    <td>@(e.EmploymentType?.Name ?? "—")</td>
+                    <td><span class="status s-success">@e.Status</span></td>
+                    <td>@e.DateOfJoining.ToString("MMM d, yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+@model HR_PAYROLL_V2.Models.Shift.ShiftViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name">Shift name</label><input asp-for="Name" placeholder="Example: General Office Shift" /></div>
+    <div class="field"><label asp-for="Code">Shift code</label><input asp-for="Code" placeholder="SHIFT-GEN" /></div>
+    <div class="field"><label asp-for="Type">Shift type</label><select asp-for="Type" asp-items="Html.GetEnumSelectList<ShiftType>()"></select></div>
+
+    <div class="setup-section-title">Working Time</div>
+    <div class="field"><label asp-for="StartTime"></label><input asp-for="StartTime" type="time" /></div>
+    <div class="field"><label asp-for="EndTime"></label><input asp-for="EndTime" type="time" /></div>
+    <div class="field"><label asp-for="BreakMinutes"></label><input asp-for="BreakMinutes" type="number" /></div>
+    <div class="field"><label asp-for="RequiredHours"></label><input asp-for="RequiredHours" type="number" step="0.25" /></div>
+    <div class="field"><label asp-for="HalfDayHours"></label><input asp-for="HalfDayHours" type="number" step="0.25" /></div>
+    <div class="field"><label asp-for="OvertimeAfterHours">Overtime starts after</label><input asp-for="OvertimeAfterHours" type="number" step="0.25" /></div>
+
+    <div class="setup-section-title">Grace and Attendance Rules</div>
+    <div class="field"><label asp-for="LateGraceMinutes">Late grace (minutes)</label><input asp-for="LateGraceMinutes" type="number" /></div>
+    <div class="field"><label asp-for="EarlyExitGraceMinutes">Early-out grace (minutes)</label><input asp-for="EarlyExitGraceMinutes" type="number" /></div>
+    <div class="field"><label asp-for="CheckInWindowMinutes">Check-in window before shift</label><input asp-for="CheckInWindowMinutes" type="number" /></div>
+    <div class="field"><label asp-for="CheckOutWindowMinutes">Check-out window after shift</label><input asp-for="CheckOutWindowMinutes" type="number" /></div>
+
+    <div class="field full">
+        <label>Working days</label>
+        <div class="day-picker">
+            <label><input asp-for="Sunday" />Sun</label>
+            <label><input asp-for="Monday" />Mon</label>
+            <label><input asp-for="Tuesday" />Tue</label>
+            <label><input asp-for="Wednesday" />Wed</label>
+            <label><input asp-for="Thursday" />Thu</label>
+            <label><input asp-for="Friday" />Fri</label>
+            <label><input asp-for="Saturday" />Sat</label>
+        </div>
+    </div>
+
+    <div class="field full">
+        <label>Additional controls</label>
+        <div class="checkbox-grid">
+            <label class="check-option"><input asp-for="CrossesMidnight" /> Crosses midnight</label>
+            <label class="check-option"><input asp-for="CalculateOvertime" /> Calculate overtime</label>
+            <label class="check-option"><input asp-for="HonorHolidayProtection" /> Honor paid-holiday protection</label>
+            <label class="check-option"><input asp-for="IsActive" /> Active</label>
+        </div>
+    </div>
+
+    <div class="field full">
+        <div class="rule-box"><strong>Holiday rule:</strong> When a paid holiday applies, missing attendance will not create absence, late, early-exit, or work-hour deductions.</div>
+    </div>
+</div>

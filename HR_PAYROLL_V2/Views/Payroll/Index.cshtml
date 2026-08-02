@@ -1,0 +1,65 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.PayrollRecord>
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    var period = (HR_PAYROLL_V2.Domain.Entities.PayrollPeriod)ViewBag.Period;
+    ViewData["Title"] = period.Name;
+    var isDraft = period.Status == PayrollPeriodStatus.Draft;
+}
+<div class="page-head">
+    <div>
+        <h2>@period.Name</h2>
+        <p>@period.StartDate.ToString("MMM d")&ndash;@period.EndDate.ToString("MMM d, yyyy") &middot; Payment date @period.PaymentDate.ToString("MMM d, yyyy")</p>
+    </div>
+    <div style="display:flex;gap:10px">
+        @if (isDraft)
+        {
+            <form asp-action="Run" asp-route-periodId="@period.Id" method="post"><button class="btn btn-primary" type="submit">Run Payroll</button></form>
+            @if (Model.Any())
+            {
+                <form asp-action="Finalize" asp-route-periodId="@period.Id" method="post" onsubmit="return confirm('Finalize and lock this payroll period?');"><button class="btn btn-success" type="submit">Finalize Payroll</button></form>
+            }
+        }
+        else
+        {
+            <span class="status s-success" style="align-self:center">@period.Status</span>
+        }
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="summary-strip" style="grid-template-columns:repeat(4,1fr)">
+        <div class="summary-pill"><strong>@Model.Count</strong><span>Employees</span></div>
+        <div class="summary-pill"><strong>@Model.Sum(r => r.GrossPay).ToString("C")</strong><span>Gross payroll</span></div>
+        <div class="summary-pill"><strong>@((Model.Sum(r => r.AttendanceDeductionAmount) + Model.Sum(r => r.WorkHourDeductionAmount)).ToString("C"))</strong><span>Attendance deductions</span></div>
+        <div class="summary-pill"><strong>@Model.Sum(r => r.NetPay).ToString("C")</strong><span>Net payable</span></div>
+    </div>
+}
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Employee</th><th>Basic</th><th>Earnings</th><th>Overtime</th><th>Attendance Deduct</th><th>Work-hour Deduct</th><th>Gross</th><th>Net Pay</th><th>Present/Absent/Leave</th></tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Employee?.FullName</td>
+                    <td>@r.BasicAmount.ToString("C")</td>
+                    <td>@r.EarningsAmount.ToString("C")</td>
+                    <td>@r.OvertimeAmount.ToString("C")</td>
+                    <td>@r.AttendanceDeductionAmount.ToString("C")</td>
+                    <td>@r.WorkHourDeductionAmount.ToString("C")</td>
+                    <td>@r.GrossPay.ToString("C")</td>
+                    <td><strong>@r.NetPay.ToString("C")</strong></td>
+                    <td>@r.PresentDays / @r.AbsentDays / @(r.PaidLeaveDays + r.UnpaidLeaveDays)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (!Model.Any())
+        {
+            <p style="text-align:center;color:var(--muted);padding:20px">No payroll calculated yet. Click "Run Payroll" to calculate from attendance, leave, and salary data.</p>
+        }
+    </div>
+</div>

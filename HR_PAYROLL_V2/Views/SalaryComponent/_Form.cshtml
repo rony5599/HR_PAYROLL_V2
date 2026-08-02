@@ -1,0 +1,15 @@
+@model HR_PAYROLL_V2.Models.Payroll.SalaryComponentViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+<div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"></select></div>
+    <div class="field"><label asp-for="Name">Component name</label><input asp-for="Name" placeholder="Example: House Allowance" /></div>
+    <div class="field"><label asp-for="Code">Component code</label><input asp-for="Code" placeholder="EARN-HOUSE" /></div>
+    <div class="field"><label asp-for="Type">Component type</label><select asp-for="Type" asp-items="Html.GetEnumSelectList<SalaryComponentType>()"></select></div>
+    <div class="field"><label asp-for="Method">Calculation method</label><select asp-for="Method" asp-items="Html.GetEnumSelectList<SalaryCalculationMethod>()"></select></div>
+    <div class="field"><label asp-for="Value">Value (amount or %)</label><input asp-for="Value" type="number" step="0.01" /></div>
+    <div class="field"><label asp-for="IsActive">Status</label>
+        <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+    </div>
+    <div class="field full"><label class="check-option"><input asp-for="IsTaxable" /> Taxable</label></div>
+</div>

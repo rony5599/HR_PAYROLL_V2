@@ -1,0 +1,19 @@
+@model HR_PAYROLL_V2.Models.Employee.EmployeeViewModel
+@{
+    ViewData["Title"] = "Add Employee";
+}
+<div class="page-head">
+    <div><h2>Add Employee</h2><p>Create a new employee profile.</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            @await Html.PartialAsync("_Form", Model)
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Create Employee</button>
+            </div>
+        </form>
+    </div>
+</div>
