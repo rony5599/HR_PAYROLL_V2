@@ -102,11 +102,4 @@ public class AccountController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login");
     }
-
-    [Authorize(Roles = "SuperAdministrator,CompanyAdministrator,HRAdministrator")]
-    public async Task<IActionResult> Users()
-    {
-        var users = await _unitOfWork.Users.GetAllAsync();
-        return View(users);
-    }
 }

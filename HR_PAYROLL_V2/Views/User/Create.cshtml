@@ -1,0 +1,42 @@
+@model HR_PAYROLL_V2.Models.User.UserViewModel
+@{
+    ViewData["Title"] = "Add User";
+    var roles = ViewBag.Roles as IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Role> ?? new List<HR_PAYROLL_V2.Domain.Entities.Role>();
+}
+<div class="page-head">
+    <div><h2>Add User</h2><p>Create a system login and assign roles.</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="Username"></label><input asp-for="Username" placeholder="jdoe" /></div>
+                <div class="field"><label asp-for="Email"></label><input asp-for="Email" placeholder="jdoe@example.com" /></div>
+                <div class="field"><label asp-for="Password"></label><input asp-for="Password" type="password" /></div>
+                <div class="field"><label asp-for="ConfirmPassword"></label><input asp-for="ConfirmPassword" type="password" /></div>
+                <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"><option value="">No company</option></select></div>
+                <div class="field"><label asp-for="IsActive">Status</label>
+                    <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
+                </div>
+                <div class="field full">
+                    <label>Roles</label>
+                    <div class="checkbox-list">
+                        @foreach (var role in roles)
+                        {
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="SelectedRoleIds" value="@role.Id" checked="@(Model.SelectedRoleIds.Contains(role.Id))" />
+                                @role.Name
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save User</button>
+            </div>
+        </form>
+    </div>
+</div>

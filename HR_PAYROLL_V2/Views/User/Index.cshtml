@@ -1,0 +1,42 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.User>
+@{
+    ViewData["Title"] = "Manage Users";
+    var roleNamesByUser = ViewBag.RoleNamesByUser as Dictionary<Guid, List<string>> ?? new();
+}
+<div class="page-head">
+    <div>
+        <h2>Manage Users</h2>
+        <p>System accounts that can sign in to PeopleFlow HRMS.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add User</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Username</th><th>Email</th><th>Company</th><th>Roles</th><th>Status</th><th>Last Login</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td><strong>@user.Username</strong></td>
+                    <td>@user.Email</td>
+                    <td>@(user.Company?.Name ?? "—")</td>
+                    <td>@(roleNamesByUser.TryGetValue(user.Id, out var names) ? string.Join(", ", names) : "—")</td>
+                    <td><span class="status @(user.IsActive ? "s-success" : "s-neutral")">@(user.IsActive ? "Active" : "Inactive")</span></td>
+                    <td>@(user.LastLoginAt?.ToString("g") ?? "Never")</td>
+                    <td>
+                        <a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                        <form asp-action="ToggleActive" asp-route-id="@user.Id" method="post" style="display:inline">
+                            <button class="btn btn-soft btn-sm" type="submit">@(user.IsActive ? "Deactivate" : "Activate")</button>
+                        </form>
+                        <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this user?');">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

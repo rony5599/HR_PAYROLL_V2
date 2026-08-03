@@ -471,6 +471,9 @@
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .field { display: grid; gap: 7px; }
     .field.full { grid-column: 1 / -1; }
+    .checkbox-list { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #344054; }
+    .checkbox-item input { width: auto; }
     .field label { font-size: 12px; font-weight: 700; color: #475467; }
     .field input, .field select, .field textarea {
       width: 100%;
