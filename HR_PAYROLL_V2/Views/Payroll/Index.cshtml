@@ -14,6 +14,7 @@
         @if (isDraft)
         {
             <form asp-action="Run" asp-route-periodId="@period.Id" method="post"><button class="btn btn-primary" type="submit">Run Payroll</button></form>
+            <form asp-action="RunWithProcedure" asp-route-periodId="@period.Id" method="post"><button class="btn" type="submit">Run Payroll (Procedure)</button></form>
             @if (Model.Any())
             {
                 <form asp-action="Finalize" asp-route-periodId="@period.Id" method="post" onsubmit="return confirm('Finalize and lock this payroll period?');"><button class="btn btn-success" type="submit">Finalize Payroll</button></form>

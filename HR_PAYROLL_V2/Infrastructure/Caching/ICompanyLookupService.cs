@@ -23,8 +23,15 @@ public class CompanyLookupService : ICompanyLookupService
         _cache = cache;
     }
 
+    //public Task<IReadOnlyList<Company>> GetAllAsync() =>
+    //    _cache.GetOrCreateAsync(CacheKey, async () => await _unitOfWork.Companies.GetAllAsync(), Ttl);
+
     public Task<IReadOnlyList<Company>> GetAllAsync() =>
-        _cache.GetOrCreateAsync(CacheKey, async () => await _unitOfWork.Companies.GetAllAsync(), Ttl);
+    _cache.GetOrCreateAsync(
+        CacheKey,
+        () => _unitOfWork.Companies.GetAllAsync(),
+        Ttl
+    );
 
     public Task InvalidateAsync() => _cache.RemoveAsync(CacheKey);
 }

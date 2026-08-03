@@ -2,9 +2,11 @@ using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Enums;
 using HR_PAYROLL_V2.Domain.Interfaces;
 using HR_PAYROLL_V2.Domain.Services;
+using HR_PAYROLL_V2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace HR_PAYROLL_V2.Controllers;
 
@@ -12,10 +14,12 @@ namespace HR_PAYROLL_V2.Controllers;
 public class PayrollController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly AppDbContext _context;
 
-    public PayrollController(IUnitOfWork unitOfWork)
+    public PayrollController(IUnitOfWork unitOfWork, AppDbContext context)
     {
         _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<IActionResult> Index(Guid periodId)
@@ -129,6 +133,37 @@ public class PayrollController : Controller
         await _unitOfWork.SaveChangesAsync();
 
         TempData["Success"] = $"Payroll calculated for {assignments.Count} employee(s).";
+        return RedirectToAction(nameof(Index), new { periodId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RunWithProcedure(Guid periodId)
+    {
+        var period = await _unitOfWork.PayrollPeriods.GetByIdAsync(periodId);
+        if (period is null)
+        {
+            return NotFound();
+        }
+
+        if (period.Status != PayrollPeriodStatus.Draft)
+        {
+            TempData["Error"] = "This payroll period is already finalized and cannot be recalculated.";
+            return RedirectToAction(nameof(Index), new { periodId });
+        }
+
+        try
+        {
+            await _context.Database.ExecuteSqlInterpolatedAsync($"CALL sp_process_payroll({periodId})");
+        }
+        catch (PostgresException ex)
+        {
+            TempData["Error"] = ex.MessageText;
+            return RedirectToAction(nameof(Index), new { periodId });
+        }
+
+        var recordCount = await _unitOfWork.PayrollRecords.Query().CountAsync(r => r.PayrollPeriodId == periodId);
+        TempData["Success"] = $"Payroll calculated for {recordCount} employee(s) via stored procedure.";
         return RedirectToAction(nameof(Index), new { periodId });
     }
 
