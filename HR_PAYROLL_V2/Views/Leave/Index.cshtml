@@ -2,7 +2,10 @@
 @using HR_PAYROLL_V2.Domain.Enums
 @{
     ViewData["Title"] = "Leave Management";
-    bool CanApprove = User.IsInRole("SuperAdministrator") || User.IsInRole("CompanyAdministrator") || User.IsInRole("HRAdministrator");
+    bool isAdmin = User.IsInRole("SuperAdministrator") || User.IsInRole("CompanyAdministrator") || User.IsInRole("HRAdministrator");
+    var managedEmployeeIds = ViewBag.ManagedEmployeeIds as HashSet<Guid> ?? new();
+    bool CanApprove(Guid employeeId) => isAdmin || managedEmployeeIds.Contains(employeeId);
+    bool ShowActionColumn = isAdmin || managedEmployeeIds.Any();
 }
 <div class="page-head">
     <div>
@@ -21,7 +24,7 @@
     </div>
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Employee</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th>@if (CanApprove) { <th>Action</th> }</tr></thead>
+            <thead><tr><th>Employee</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th>@if (ShowActionColumn) { <th>Action</th> }</tr></thead>
             <tbody>
             @foreach (var app in Model)
             {
@@ -34,10 +37,10 @@
                     <td>
                         <span class="status @(app.Status == LeaveStatus.Approved ? "s-success" : app.Status == LeaveStatus.Rejected ? "s-danger" : app.Status == LeaveStatus.Cancelled ? "s-neutral" : "s-warning")">@app.Status</span>
                     </td>
-                    @if (CanApprove)
+                    @if (ShowActionColumn)
                     {
                         <td>
-                            @if (app.Status == LeaveStatus.Pending)
+                            @if (app.Status == LeaveStatus.Pending && CanApprove(app.EmployeeId))
                             {
                                 <form asp-action="Approve" method="post" style="display:inline">
                                     <input type="hidden" name="Id" value="@app.Id" />

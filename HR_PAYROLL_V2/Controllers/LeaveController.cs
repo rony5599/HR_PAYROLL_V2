@@ -31,6 +31,26 @@ public class LeaveController : Controller
         return employee?.Id;
     }
 
+    private async Task<bool> CanApproveAsync(Guid employeeId)
+    {
+        if (User.IsAdministrator())
+        {
+            return true;
+        }
+
+        var currentEmployeeId = await GetCurrentEmployeeIdAsync();
+        if (currentEmployeeId is null)
+        {
+            return false;
+        }
+
+        return await _unitOfWork.ReportingRelationships.ExistsAsync(r =>
+            r.EmployeeId == employeeId &&
+            r.ManagerId == currentEmployeeId &&
+            r.IsActive &&
+            r.RelationshipType == ReportingRelationshipType.Primary);
+    }
+
     public async Task<IActionResult> Index(LeaveStatus? status)
     {
         var query = _unitOfWork.LeaveApplications.Query()
@@ -39,10 +59,20 @@ public class LeaveController : Controller
             .Include(l => l.Approver)
             .AsQueryable();
 
-        if (!User.IsAdministrator())
+        var isAdmin = User.IsAdministrator();
+        Guid? currentEmployeeId = null;
+        if (!isAdmin)
         {
-            var employeeId = await GetCurrentEmployeeIdAsync();
-            query = query.Where(l => l.EmployeeId == employeeId);
+            currentEmployeeId = await GetCurrentEmployeeIdAsync();
+            var managedEmployeeIds = (await _unitOfWork.ReportingRelationships.FindAsync(r =>
+                    r.ManagerId == currentEmployeeId && r.IsActive && r.RelationshipType == ReportingRelationshipType.Primary))
+                .Select(r => r.EmployeeId)
+                .ToHashSet();
+
+            ViewBag.ManagedEmployeeIds = managedEmployeeIds;
+
+            var visibleEmployeeIds = managedEmployeeIds.Append(currentEmployeeId ?? Guid.Empty).ToHashSet();
+            query = query.Where(l => visibleEmployeeIds.Contains(l.EmployeeId));
         }
 
         if (status.HasValue)
@@ -201,7 +231,6 @@ public class LeaveController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "SuperAdministrator,CompanyAdministrator,HRAdministrator")]
     public async Task<IActionResult> Approve(LeaveDecisionViewModel model)
     {
         var application = await _unitOfWork.LeaveApplications.GetByIdAsync(model.Id);
@@ -210,7 +239,13 @@ public class LeaveController : Controller
             return NotFound();
         }
 
+        if (!await CanApproveAsync(application.EmployeeId))
+        {
+            return Forbid();
+        }
+
         application.Status = LeaveStatus.Approved;
+        application.ApproverId = await GetCurrentEmployeeIdAsync();
         application.DecidedAt = DateTime.UtcNow;
         application.DecisionComment = model.Comment;
         _unitOfWork.LeaveApplications.Update(application);
@@ -222,7 +257,6 @@ public class LeaveController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "SuperAdministrator,CompanyAdministrator,HRAdministrator")]
     public async Task<IActionResult> Reject(LeaveDecisionViewModel model)
     {
         var application = await _unitOfWork.LeaveApplications.GetByIdAsync(model.Id);
@@ -231,7 +265,13 @@ public class LeaveController : Controller
             return NotFound();
         }
 
+        if (!await CanApproveAsync(application.EmployeeId))
+        {
+            return Forbid();
+        }
+
         application.Status = LeaveStatus.Rejected;
+        application.ApproverId = await GetCurrentEmployeeIdAsync();
         application.DecidedAt = DateTime.UtcNow;
         application.DecisionComment = model.Comment;
         _unitOfWork.LeaveApplications.Update(application);
