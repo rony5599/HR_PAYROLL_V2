@@ -1,0 +1,36 @@
+@model HR_PAYROLL_V2.Domain.Entities.Employee
+@{
+    ViewData["Title"] = "My Profile";
+    var manager = Model.ReportingRelationships.FirstOrDefault(r => r.IsActive)?.Manager;
+}
+<div class="page-head">
+    <div>
+        <h2>@Model.FullName</h2>
+        <p>@Model.EmployeeCode &middot; @(Model.Designation?.Title ?? "No designation")</p>
+    </div>
+</div>
+
+<div class="grid-equal">
+    <div class="panel">
+        <div class="panel-head"><h3>Employment details</h3></div>
+        <div class="panel-body">
+            <div class="payroll-line"><span>Company</span><strong>@Model.Company?.Name</strong></div>
+            <div class="payroll-line"><span>Department</span><strong>@(Model.OrganizationalUnit?.Name ?? "—")</strong></div>
+            <div class="payroll-line"><span>Grade</span><strong>@(Model.Grade?.Name ?? "—")</strong></div>
+            <div class="payroll-line"><span>Employment type</span><strong>@(Model.EmploymentType?.Name ?? "—")</strong></div>
+            <div class="payroll-line"><span>Employee category</span><strong>@(Model.EmployeeCategory?.Name ?? "—")</strong></div>
+            <div class="payroll-line"><span>Date of joining</span><strong>@Model.DateOfJoining.ToString("MMM d, yyyy")</strong></div>
+            <div class="payroll-line"><span>Status</span><strong>@Model.Status</strong></div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-head"><h3>Contact &amp; reporting</h3></div>
+        <div class="panel-body">
+            <div class="payroll-line"><span>Email</span><strong>@(Model.Email ?? "—")</strong></div>
+            <div class="payroll-line"><span>Phone</span><strong>@(Model.Phone ?? "—")</strong></div>
+            <div class="payroll-line"><span>Work location</span><strong>@(Model.WorkLocation ?? "—")</strong></div>
+            <div class="payroll-line"><span>Immediate manager</span><strong>@(manager?.FullName ?? "None (top of hierarchy)")</strong></div>
+            <div class="payroll-line"><span>Shift</span><strong>@((ViewBag.CurrentShift as HR_PAYROLL_V2.Domain.Entities.Shift)?.Name ?? "Not assigned")</strong></div>
+        </div>
+    </div>
+</div>

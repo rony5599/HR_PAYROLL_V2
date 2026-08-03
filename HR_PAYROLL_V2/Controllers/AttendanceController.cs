@@ -1,6 +1,7 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Interfaces;
 using HR_PAYROLL_V2.Domain.Services;
+using HR_PAYROLL_V2.Infrastructure.Authorization;
 using HR_PAYROLL_V2.Models.Attendance;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,12 +24,19 @@ public class AttendanceController : Controller
     {
         var targetDate = date ?? DateOnly.FromDateTime(DateTime.Today);
 
-        var records = await _unitOfWork.Attendances.Query()
+        var query = _unitOfWork.Attendances.Query()
             .Include(a => a.Employee)
             .Include(a => a.Shift)
-            .Where(a => a.AttendanceDate == targetDate)
-            .OrderBy(a => a.Employee!.EmployeeCode)
-            .ToListAsync();
+            .Where(a => a.AttendanceDate == targetDate);
+
+        if (!User.IsAdministrator())
+        {
+            var employeeId = User.CurrentEmployeeId()
+                ?? (await _unitOfWork.Employees.FindAsync(e => e.UserId == User.CurrentUserId())).FirstOrDefault()?.Id;
+            query = query.Where(a => a.EmployeeId == employeeId);
+        }
+
+        var records = await query.OrderBy(a => a.Employee!.EmployeeCode).ToListAsync();
 
         ViewBag.Date = targetDate;
         return View(records);

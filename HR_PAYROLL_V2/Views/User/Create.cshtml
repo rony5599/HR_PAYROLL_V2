@@ -17,6 +17,7 @@
                 <div class="field"><label asp-for="Password"></label><input asp-for="Password" type="password" /></div>
                 <div class="field"><label asp-for="ConfirmPassword"></label><input asp-for="ConfirmPassword" type="password" /></div>
                 <div class="field"><label asp-for="CompanyId">Company</label><select asp-for="CompanyId" asp-items="ViewBag.Companies"><option value="">No company</option></select></div>
+                <div class="field"><label asp-for="EmployeeId">Linked employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"><option value="">Not linked to an employee</option></select></div>
                 <div class="field"><label asp-for="IsActive">Status</label>
                     <select asp-for="IsActive" asp-items="@(new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>{ new("Active","true"), new("Inactive","false") })"></select>
                 </div>

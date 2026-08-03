@@ -1,6 +1,7 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Enums;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Authorization;
 using HR_PAYROLL_V2.Models.Leave;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,17 @@ public class LeaveController : Controller
         _unitOfWork = unitOfWork;
     }
 
+    private async Task<Guid?> GetCurrentEmployeeIdAsync()
+    {
+        if (User.CurrentEmployeeId() is Guid id)
+        {
+            return id;
+        }
+
+        var employee = (await _unitOfWork.Employees.FindAsync(e => e.UserId == User.CurrentUserId())).FirstOrDefault();
+        return employee?.Id;
+    }
+
     public async Task<IActionResult> Index(LeaveStatus? status)
     {
         var query = _unitOfWork.LeaveApplications.Query()
@@ -26,6 +38,12 @@ public class LeaveController : Controller
             .Include(l => l.LeaveType)
             .Include(l => l.Approver)
             .AsQueryable();
+
+        if (!User.IsAdministrator())
+        {
+            var employeeId = await GetCurrentEmployeeIdAsync();
+            query = query.Where(l => l.EmployeeId == employeeId);
+        }
 
         if (status.HasValue)
         {
@@ -69,22 +87,60 @@ public class LeaveController : Controller
         return leaveType.AnnualEntitlementDays - used;
     }
 
-    private async Task PopulateDropdownsAsync()
+    private async Task PopulateDropdownsAsync(bool includeEmployees = true)
     {
-        ViewBag.Employees = new SelectList(await _unitOfWork.Employees.GetAllAsync(), "Id", "FullName");
+        if (includeEmployees)
+        {
+            ViewBag.Employees = new SelectList(await _unitOfWork.Employees.GetAllAsync(), "Id", "FullName");
+        }
+
         ViewBag.LeaveTypes = new SelectList(await _unitOfWork.LeaveTypes.FindAsync(l => l.IsActive), "Id", "Name");
     }
 
     public async Task<IActionResult> Create()
     {
-        await PopulateDropdownsAsync();
-        return View(new LeaveApplicationViewModel());
+        var isAdmin = User.IsAdministrator();
+        await PopulateDropdownsAsync(includeEmployees: isAdmin);
+
+        var model = new LeaveApplicationViewModel();
+        if (!isAdmin)
+        {
+            var employeeId = await GetCurrentEmployeeIdAsync();
+            if (employeeId is null)
+            {
+                ModelState.AddModelError(string.Empty, "No employee profile is linked to your account.");
+            }
+            else
+            {
+                model.EmployeeId = employeeId.Value;
+            }
+
+            ViewBag.IsSelfService = true;
+        }
+
+        return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LeaveApplicationViewModel model)
     {
+        var isAdmin = User.IsAdministrator();
+        if (!isAdmin)
+        {
+            var employeeId = await GetCurrentEmployeeIdAsync();
+            if (employeeId is null)
+            {
+                ModelState.AddModelError(string.Empty, "No employee profile is linked to your account.");
+            }
+            else
+            {
+                model.EmployeeId = employeeId.Value;
+            }
+
+            ViewBag.IsSelfService = true;
+        }
+
         var leaveType = await _unitOfWork.LeaveTypes.GetByIdAsync(model.LeaveTypeId);
         if (leaveType is null)
         {
@@ -121,7 +177,7 @@ public class LeaveController : Controller
 
         if (!ModelState.IsValid)
         {
-            await PopulateDropdownsAsync();
+            await PopulateDropdownsAsync(includeEmployees: isAdmin);
             return View(model);
         }
 

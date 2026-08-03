@@ -9,7 +9,14 @@
         <form asp-action="Create" method="post">
             <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
             <div class="form-grid">
-                <div class="field"><label asp-for="EmployeeId">Employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"></select></div>
+                @if (ViewBag.IsSelfService == true)
+                {
+                    <input type="hidden" asp-for="EmployeeId" />
+                }
+                else
+                {
+                    <div class="field"><label asp-for="EmployeeId">Employee</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees"></select></div>
+                }
                 <div class="field"><label asp-for="AttendanceDate"></label><input asp-for="AttendanceDate" type="date" /></div>
                 <div class="field"><label asp-for="RequestedCheckIn">Requested check-in</label><input asp-for="RequestedCheckIn" type="time" /></div>
                 <div class="field"><label asp-for="RequestedCheckOut">Requested check-out</label><input asp-for="RequestedCheckOut" type="time" /></div>

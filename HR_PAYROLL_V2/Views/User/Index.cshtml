@@ -14,7 +14,7 @@
 <div class="panel">
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Username</th><th>Email</th><th>Company</th><th>Roles</th><th>Status</th><th>Last Login</th><th>Action</th></tr></thead>
+            <thead><tr><th>Username</th><th>Email</th><th>Company</th><th>Employee</th><th>Roles</th><th>Status</th><th>Last Login</th><th>Action</th></tr></thead>
             <tbody>
             @foreach (var user in Model)
             {
@@ -22,6 +22,7 @@
                     <td><strong>@user.Username</strong></td>
                     <td>@user.Email</td>
                     <td>@(user.Company?.Name ?? "—")</td>
+                    <td>@(user.Employee?.FullName ?? "—")</td>
                     <td>@(roleNamesByUser.TryGetValue(user.Id, out var names) ? string.Join(", ", names) : "—")</td>
                     <td><span class="status @(user.IsActive ? "s-success" : "s-neutral")">@(user.IsActive ? "Active" : "Inactive")</span></td>
                     <td>@(user.LastLoginAt?.ToString("g") ?? "Never")</td>

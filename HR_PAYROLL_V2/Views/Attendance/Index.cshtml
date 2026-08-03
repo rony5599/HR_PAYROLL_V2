@@ -9,7 +9,10 @@
         <h2>Attendance</h2>
         <p>Daily attendance calculated from assigned shift, check-in, and check-out times.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">+ Manual Attendance</a>
+    @if (User.IsInRole("SuperAdministrator") || User.IsInRole("CompanyAdministrator") || User.IsInRole("HRAdministrator"))
+    {
+        <a class="btn btn-primary" asp-action="Create">+ Manual Attendance</a>
+    }
 </div>
 
 <div class="summary-strip">

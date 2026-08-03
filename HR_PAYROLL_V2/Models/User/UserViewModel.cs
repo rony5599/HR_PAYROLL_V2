@@ -19,6 +19,7 @@ public class UserViewModel
     public string? ConfirmPassword { get; set; }
 
     public Guid? CompanyId { get; set; }
+    public Guid? EmployeeId { get; set; }
     public bool IsActive { get; set; } = true;
 
     public List<Guid> SelectedRoleIds { get; set; } = new();
