@@ -100,6 +100,9 @@
             <a class="nav-item @(IsActive("Role") ? "active" : "")" asp-controller="Role" asp-action="Index">
                 <span class="nav-left"><span class="nav-icon">&#128273;</span>Manage Roles</span>
             </a>
+            <a class="nav-item @(IsActive("AuditLog") ? "active" : "")" asp-controller="AuditLog" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128220;</span>Audit Trail</span>
+            </a>
         }
 
         <div class="sidebar-footer">

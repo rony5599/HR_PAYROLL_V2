@@ -5,7 +5,7 @@ public static class PermissionCatalog
     public static readonly string[] Modules =
     {
         "Users", "Roles", "Companies", "Departments", "Employees",
-        "Attendance", "Leave", "Shifts", "Holidays", "Payroll", "Overtime", "Reports"
+        "Attendance", "Leave", "Shifts", "Holidays", "Payroll", "Overtime", "Reports", "AuditLogs"
     };
 
     public static IEnumerable<(string Name, string Module, string Description)> All()

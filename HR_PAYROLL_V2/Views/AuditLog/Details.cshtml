@@ -1,0 +1,42 @@
+@model HR_PAYROLL_V2.Domain.Entities.AuditLog
+@{
+    ViewData["Title"] = "Audit Log Detail";
+}
+<div class="page-head">
+    <div>
+        <h2>Audit Log Detail</h2>
+        <p>@Model.EntityName @(Model.EntityId is not null ? $"#{Model.EntityId}" : "")</p>
+    </div>
+    <a class="btn btn-soft" asp-action="Index">Back to Audit Trail</a>
+</div>
+
+<div class="panel">
+    <div class="panel-head"><h3>Summary</h3></div>
+    <div class="panel-body">
+        <div class="payroll-line"><span>Timestamp (UTC)</span><strong>@Model.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</strong></div>
+        <div class="payroll-line"><span>Entity</span><strong>@Model.EntityName</strong></div>
+        <div class="payroll-line"><span>Entity Id</span><strong>@(Model.EntityId?.ToString() ?? "—")</strong></div>
+        <div class="payroll-line"><span>Action</span><strong>@Model.Action</strong></div>
+        <div class="payroll-line"><span>User</span><strong>@(Model.UserName ?? "System")</strong></div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.OldValues))
+{
+    <div class="panel">
+        <div class="panel-head"><h3>Old Values</h3></div>
+        <div class="panel-body">
+            <pre style="white-space:pre-wrap;word-break:break-word;">@Model.OldValues</pre>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.NewValues))
+{
+    <div class="panel">
+        <div class="panel-head"><h3>New Values</h3></div>
+        <div class="panel-body">
+            <pre style="white-space:pre-wrap;word-break:break-word;">@Model.NewValues</pre>
+        </div>
+    </div>
+}

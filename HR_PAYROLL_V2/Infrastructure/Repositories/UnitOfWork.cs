@@ -39,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<OvertimeRequest>? _overtimeRequests;
     private IRepository<DutyRoster>? _dutyRosters;
     private IRepository<DutyRosterMember>? _dutyRosterMembers;
+    private IRepository<AuditLog>? _auditLogs;
 
     public UnitOfWork(AppDbContext context)
     {
@@ -76,6 +77,7 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<OvertimeRequest> OvertimeRequests => _overtimeRequests ??= new Repository<OvertimeRequest>(_context);
     public IRepository<DutyRoster> DutyRosters => _dutyRosters ??= new Repository<DutyRoster>(_context);
     public IRepository<DutyRosterMember> DutyRosterMembers => _dutyRosterMembers ??= new Repository<DutyRosterMember>(_context);
+    public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
 
     public Task<int> SaveChangesAsync() => _context.SaveChangesAsync();
 

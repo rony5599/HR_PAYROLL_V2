@@ -35,6 +35,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<OvertimeRequest> OvertimeRequests { get; }
     IRepository<DutyRoster> DutyRosters { get; }
     IRepository<DutyRosterMember> DutyRosterMembers { get; }
+    IRepository<AuditLog> AuditLogs { get; }
 
     Task<int> SaveChangesAsync();
 }

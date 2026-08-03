@@ -1,12 +1,21 @@
+using System.Security.Claims;
+using System.Text.Json;
 using HR_PAYROLL_V2.Domain.Common;
 using HR_PAYROLL_V2.Domain.Entities;
+using HR_PAYROLL_V2.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace HR_PAYROLL_V2.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
 
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<Branch> Branches => Set<Branch>();
@@ -39,6 +48,7 @@ public class AppDbContext : DbContext
     public DbSet<OvertimeRequest> OvertimeRequests => Set<OvertimeRequest>();
     public DbSet<DutyRoster> DutyRosters => Set<DutyRoster>();
     public DbSet<DutyRosterMember> DutyRosterMembers => Set<DutyRosterMember>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,14 +76,88 @@ public class AppDbContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        var utcNow = DateTime.UtcNow;
+
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             if (entry.State == EntityState.Modified)
             {
-                entry.Entity.UpdatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = utcNow;
             }
         }
 
+        var auditEntries = BuildAuditEntries(utcNow);
+        if (auditEntries.Count > 0)
+        {
+            AuditLogs.AddRange(auditEntries);
+        }
+
         return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private List<AuditLog> BuildAuditEntries(DateTime timestamp)
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        var userId = Guid.TryParse(user?.FindFirstValue(ClaimTypes.NameIdentifier), out var parsedUserId) ? parsedUserId : (Guid?)null;
+        var userName = user?.Identity?.IsAuthenticated == true ? user.FindFirstValue(ClaimTypes.Name) : null;
+
+        var entries = new List<AuditLog>();
+
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity is AuditLog || entry.State is EntityState.Detached or EntityState.Unchanged)
+            {
+                continue;
+            }
+
+            AuditAction action;
+            string? oldValues = null;
+            string? newValues = null;
+            List<string>? changedColumns = null;
+
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    action = AuditAction.Create;
+                    newValues = JsonSerializer.Serialize(entry.Properties.ToDictionary(p => p.Metadata.Name, p => p.CurrentValue));
+                    break;
+                case EntityState.Deleted:
+                    action = AuditAction.Delete;
+                    oldValues = JsonSerializer.Serialize(entry.Properties.ToDictionary(p => p.Metadata.Name, p => p.OriginalValue));
+                    break;
+                case EntityState.Modified:
+                    var modifiedProperties = entry.Properties.Where(p => p.IsModified).ToList();
+                    if (modifiedProperties.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    action = AuditAction.Update;
+                    changedColumns = modifiedProperties.Select(p => p.Metadata.Name).ToList();
+                    oldValues = JsonSerializer.Serialize(modifiedProperties.ToDictionary(p => p.Metadata.Name, p => p.OriginalValue));
+                    newValues = JsonSerializer.Serialize(modifiedProperties.ToDictionary(p => p.Metadata.Name, p => p.CurrentValue));
+                    break;
+                default:
+                    continue;
+            }
+
+            var idProperty = entry.Properties.FirstOrDefault(p => p.Metadata.Name == "Id");
+            var entityId = idProperty?.CurrentValue is Guid guidId ? guidId : (Guid?)null;
+
+            entries.Add(new AuditLog
+            {
+                EntityName = entry.Entity.GetType().Name,
+                EntityId = entityId,
+                Action = action,
+                OldValues = oldValues,
+                NewValues = newValues,
+                ChangedColumns = changedColumns is { Count: > 0 } ? JsonSerializer.Serialize(changedColumns) : null,
+                UserId = userId,
+                UserName = userName,
+                Timestamp = timestamp
+            });
+        }
+
+        return entries;
     }
 }

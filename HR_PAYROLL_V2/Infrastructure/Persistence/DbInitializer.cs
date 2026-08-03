@@ -22,9 +22,13 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        if (!await context.Permissions.AnyAsync())
+        var rolePermissionsExistedBeforeSeed = await context.RolePermissions.AnyAsync();
+
+        var existingPermissionNames = (await context.Permissions.Select(p => p.Name).ToListAsync()).ToHashSet();
+        var missingPermissions = PermissionCatalog.All().Where(p => !existingPermissionNames.Contains(p.Name)).ToList();
+        if (missingPermissions.Count > 0)
         {
-            context.Permissions.AddRange(PermissionCatalog.All().Select(p => new Permission
+            context.Permissions.AddRange(missingPermissions.Select(p => new Permission
             {
                 Name = p.Name,
                 Module = p.Module,
@@ -33,7 +37,7 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        if (!await context.RolePermissions.AnyAsync())
+        if (!rolePermissionsExistedBeforeSeed)
         {
             var permissions = await context.Permissions.ToListAsync();
             var roles = await context.Roles.ToListAsync();
@@ -56,7 +60,8 @@ public static class DbInitializer
                     "Holidays.View", "Holidays.Manage",
                     "Overtime.View", "Overtime.Manage",
                     "Payroll.View",
-                    "Reports.View"
+                    "Reports.View",
+                    "AuditLogs.View"
                 },
                 ["Employee"] = Array.Empty<string>()
             };
@@ -72,6 +77,42 @@ public static class DbInitializer
                 {
                     var permission = permissions.FirstOrDefault(p => p.Name == permissionName);
                     if (permission is not null)
+                    {
+                        context.RolePermissions.Add(new RolePermission { RoleId = role.Id, PermissionId = permission.Id });
+                    }
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
+        else if (missingPermissions.Any(p => p.Module == "AuditLogs"))
+        {
+            // Backfill audit-log permissions onto existing admin roles when upgrading a database
+            // that was already seeded before the audit trail feature was added.
+            var auditPermissions = await context.Permissions.Where(p => p.Module == "AuditLogs").ToListAsync();
+            var roles = await context.Roles.ToListAsync();
+            var existingGrants = (await context.RolePermissions.ToListAsync())
+                .Select(rp => (rp.RoleId, rp.PermissionId))
+                .ToHashSet();
+
+            var auditGrants = new Dictionary<string, string[]>
+            {
+                ["SuperAdministrator"] = new[] { "AuditLogs.View", "AuditLogs.Manage" },
+                ["CompanyAdministrator"] = new[] { "AuditLogs.View", "AuditLogs.Manage" },
+                ["HRAdministrator"] = new[] { "AuditLogs.View" }
+            };
+
+            foreach (var role in roles)
+            {
+                if (!auditGrants.TryGetValue(role.Name, out var permissionNames))
+                {
+                    continue;
+                }
+
+                foreach (var permissionName in permissionNames)
+                {
+                    var permission = auditPermissions.FirstOrDefault(p => p.Name == permissionName);
+                    if (permission is not null && !existingGrants.Contains((role.Id, permission.Id)))
                     {
                         context.RolePermissions.Add(new RolePermission { RoleId = role.Id, PermissionId = permission.Id });
                     }

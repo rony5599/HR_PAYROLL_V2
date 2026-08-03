@@ -1,0 +1,87 @@
+@model HR_PAYROLL_V2.Models.AuditLog.AuditLogListViewModel
+@using HR_PAYROLL_V2.Domain.Enums
+@{
+    ViewData["Title"] = "Audit Trail";
+
+    string ActionBadge(AuditAction action) => action switch
+    {
+        AuditAction.Create => "s-success",
+        AuditAction.Update => "s-info",
+        AuditAction.Delete => "s-danger",
+        AuditAction.Approve => "s-success",
+        AuditAction.Reject => "s-danger",
+        AuditAction.Login => "s-neutral",
+        AuditAction.Export => "s-neutral",
+        AuditAction.Reopen => "s-warning",
+        _ => "s-neutral"
+    };
+}
+<div class="page-head">
+    <div>
+        <h2>Audit Trail</h2>
+        <p>System-wide record of who created, changed or removed data, and when.</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="get" class="toolbar">
+            <select class="control" name="entityName">
+                <option value="">All entities</option>
+                @foreach (var name in Model.EntityNames)
+                {
+                    <option value="@name" selected="@(name == Model.EntityName)">@name</option>
+                }
+            </select>
+            <select class="control" name="actionType">
+                <option value="">All actions</option>
+                @foreach (var value in Enum.GetValues<AuditAction>())
+                {
+                    <option value="@value" selected="@(value == Model.Action)">@value</option>
+                }
+            </select>
+            <input class="control" type="date" name="from" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+            <input class="control" type="date" name="to" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+            <button class="btn btn-outline" type="submit">Filter</button>
+            <a class="btn btn-soft" asp-action="Index">Reset</a>
+        </form>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Timestamp (UTC)</th><th>Entity</th><th>Entity Id</th><th>Action</th><th>User</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var log in Model.Items)
+            {
+                <tr>
+                    <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td><strong>@log.EntityName</strong></td>
+                    <td>@(log.EntityId?.ToString() ?? "—")</td>
+                    <td><span class="status @ActionBadge(log.Action)">@log.Action</span></td>
+                    <td>@(log.UserName ?? "System")</td>
+                    <td><a class="btn btn-soft btn-sm" asp-action="Details" asp-route-id="@log.Id">View</a></td>
+                </tr>
+            }
+            @if (Model.Items.Count == 0)
+            {
+                <tr><td colspan="6">No audit log entries match this filter.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="panel-body" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Page @Model.Page of @Model.TotalPages (@Model.TotalCount total)</span>
+            <div>
+                @if (Model.Page > 1)
+                {
+                    <a class="btn btn-soft btn-sm" asp-action="Index" asp-route-entityName="@Model.EntityName" asp-route-actionType="@Model.Action" asp-route-from="@Model.From" asp-route-to="@Model.To" asp-route-page="@(Model.Page - 1)">Previous</a>
+                }
+                @if (Model.Page < Model.TotalPages)
+                {
+                    <a class="btn btn-soft btn-sm" asp-action="Index" asp-route-entityName="@Model.EntityName" asp-route-actionType="@Model.Action" asp-route-from="@Model.From" asp-route-to="@Model.To" asp-route-page="@(Model.Page + 1)">Next</a>
+                }
+            </div>
+        </div>
+    }
+</div>
