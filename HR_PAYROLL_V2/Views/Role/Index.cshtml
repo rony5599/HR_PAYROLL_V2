@@ -1,0 +1,40 @@
+@model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.Role>
+@{
+    ViewData["Title"] = "Manage Roles";
+    var permissionCountByRole = ViewBag.PermissionCountByRole as Dictionary<Guid, int> ?? new();
+}
+<div class="page-head">
+    <div>
+        <h2>Manage Roles</h2>
+        <p>Roles and the permissions granted to them.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">+ Add Role</a>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Name</th><th>Description</th><th>Type</th><th>Permissions</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td><strong>@role.Name</strong></td>
+                    <td>@(role.Description ?? "—")</td>
+                    <td><span class="status @(role.IsSystemRole ? "s-neutral" : "s-success")">@(role.IsSystemRole ? "System" : "Custom")</span></td>
+                    <td>@(permissionCountByRole.TryGetValue(role.Id, out var count) ? count : 0)</td>
+                    <td>
+                        <a class="btn btn-soft btn-sm" asp-action="Edit" asp-route-id="@role.Id">Edit</a>
+                        @if (!role.IsSystemRole)
+                        {
+                            <form asp-action="Delete" asp-route-id="@role.Id" method="post" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this role?');">Remove</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

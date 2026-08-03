@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Entities;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Authorization;
 using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Infrastructure.Identity;
 using HR_PAYROLL_V2.Models.User;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR_PAYROLL_V2.Controllers;
 
-[Authorize(Roles = "SuperAdministrator,CompanyAdministrator,HRAdministrator")]
+[Authorize]
 public class UserController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -24,6 +25,7 @@ public class UserController : Controller
         _passwordHasher = passwordHasher;
     }
 
+    [RequirePermission("Users.View", "Users.Manage")]
     public async Task<IActionResult> Index()
     {
         var users = await _unitOfWork.Users.Query().Include(u => u.Company).ToListAsync();
@@ -43,6 +45,7 @@ public class UserController : Controller
         ViewBag.Roles = await _unitOfWork.Roles.GetAllAsync();
     }
 
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> Create()
     {
         var model = new UserViewModel();
@@ -52,6 +55,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> Create(UserViewModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Password))
@@ -98,6 +102,7 @@ public class UserController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> Edit(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
@@ -126,6 +131,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> Edit(Guid id, UserViewModel model)
     {
         if (id != model.Id)
@@ -185,6 +191,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
@@ -202,6 +209,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequirePermission("Users.Manage")]
     public async Task<IActionResult> ToggleActive(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);

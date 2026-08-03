@@ -22,6 +22,65 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
+        if (!await context.Permissions.AnyAsync())
+        {
+            context.Permissions.AddRange(PermissionCatalog.All().Select(p => new Permission
+            {
+                Name = p.Name,
+                Module = p.Module,
+                Description = p.Description
+            }));
+            await context.SaveChangesAsync();
+        }
+
+        if (!await context.RolePermissions.AnyAsync())
+        {
+            var permissions = await context.Permissions.ToListAsync();
+            var roles = await context.Roles.ToListAsync();
+
+            var grants = new Dictionary<string, string[]>
+            {
+                ["SuperAdministrator"] = permissions.Select(p => p.Name).ToArray(),
+                ["CompanyAdministrator"] = permissions.Select(p => p.Name)
+                    .Where(n => n is not ("Roles.View" or "Roles.Manage" or "Users.Manage"))
+                    .Append("Users.View")
+                    .Distinct()
+                    .ToArray(),
+                ["HRAdministrator"] = new[]
+                {
+                    "Departments.View", "Departments.Manage",
+                    "Employees.View", "Employees.Manage",
+                    "Attendance.View", "Attendance.Manage",
+                    "Leave.View", "Leave.Manage",
+                    "Shifts.View", "Shifts.Manage",
+                    "Holidays.View", "Holidays.Manage",
+                    "Overtime.View", "Overtime.Manage",
+                    "Payroll.View",
+                    "Reports.View"
+                },
+                ["Employee"] = Array.Empty<string>()
+            };
+
+            foreach (var role in roles)
+            {
+                if (!grants.TryGetValue(role.Name, out var permissionNames))
+                {
+                    continue;
+                }
+
+                foreach (var permissionName in permissionNames)
+                {
+                    var permission = permissions.FirstOrDefault(p => p.Name == permissionName);
+                    if (permission is not null)
+                    {
+                        context.RolePermissions.Add(new RolePermission { RoleId = role.Id, PermissionId = permission.Id });
+                    }
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
+
         Company? company = await context.Companies.FirstOrDefaultAsync();
         if (company is null)
         {

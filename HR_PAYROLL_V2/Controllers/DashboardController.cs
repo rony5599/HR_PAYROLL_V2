@@ -1,5 +1,6 @@
 using HR_PAYROLL_V2.Domain.Enums;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Authorization;
 using HR_PAYROLL_V2.Infrastructure.Caching;
 using HR_PAYROLL_V2.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,11 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Index()
     {
+        if (!User.IsAdministrator())
+        {
+            return RedirectToAction("Index", "Profile");
+        }
+
         var vm = await _cache.GetOrCreateAsync("dashboard:summary", BuildSummaryAsync, CacheTtl);
         return View(vm);
     }

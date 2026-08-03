@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using HR_PAYROLL_V2.Domain.Interfaces;
+using HR_PAYROLL_V2.Infrastructure.Authorization;
 using HR_PAYROLL_V2.Infrastructure.Identity;
+using Microsoft.EntityFrameworkCore;
 using HR_PAYROLL_V2.Models.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,6 +52,7 @@ public class AccountController : Controller
         }
 
         var userRoles = await _unitOfWork.UserRoles.FindAsync(ur => ur.UserId == user.Id);
+        var roleIds = userRoles.Select(ur => ur.RoleId).ToList();
         var roles = new List<string>();
         foreach (var userRole in userRoles)
         {
@@ -60,7 +63,14 @@ public class AccountController : Controller
             }
         }
 
+        var permissionNames = await _unitOfWork.RolePermissions.Query()
+            .Where(rp => roleIds.Contains(rp.RoleId))
+            .Select(rp => rp.Permission!.Name)
+            .Distinct()
+            .ToListAsync();
+
         var company = user.CompanyId.HasValue ? await _unitOfWork.Companies.GetByIdAsync(user.CompanyId.Value) : null;
+        var employee = (await _unitOfWork.Employees.FindAsync(e => e.UserId == user.Id)).FirstOrDefault();
 
         var claims = new List<Claim>
         {
@@ -69,6 +79,11 @@ public class AccountController : Controller
             new(ClaimTypes.Email, user.Email)
         };
         claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        claims.AddRange(permissionNames.Select(p => new Claim(PermissionClaims.ClaimType, p)));
+        if (employee is not null)
+        {
+            claims.Add(new Claim("EmployeeId", employee.Id.ToString()));
+        }
         if (company is not null)
         {
             claims.Add(new Claim("CompanyId", company.Id.ToString()));

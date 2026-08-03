@@ -1,6 +1,8 @@
+@using HR_PAYROLL_V2.Infrastructure.Authorization
 @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     bool IsActive(params string[] names) => names.Contains(controller, StringComparer.OrdinalIgnoreCase);
+    bool isAdmin = User.IsAdministrator();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -22,15 +24,24 @@
         </div>
 
         <div class="nav-title">Workspace</div>
-        <a class="nav-item @(IsActive("Dashboard","Home") ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9679;</span>Dashboard</span>
-        </a>
-        <a class="nav-item @(IsActive("Employee") ? "active" : "")" asp-controller="Employee" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#128101;</span>Employees</span>
-        </a>
-        <a class="nav-item @(IsActive("Department") ? "active" : "")" asp-controller="Department" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9776;</span>Departments</span>
-        </a>
+        @if (isAdmin)
+        {
+            <a class="nav-item @(IsActive("Dashboard","Home") ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9679;</span>Dashboard</span>
+            </a>
+            <a class="nav-item @(IsActive("Employee") ? "active" : "")" asp-controller="Employee" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128101;</span>Employees</span>
+            </a>
+            <a class="nav-item @(IsActive("Department") ? "active" : "")" asp-controller="Department" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9776;</span>Departments</span>
+            </a>
+        }
+        else
+        {
+            <a class="nav-item @(IsActive("Profile") ? "active" : "")" asp-controller="Profile" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128100;</span>My Profile</span>
+            </a>
+        }
         <a class="nav-item @(IsActive("Organogram") ? "active" : "")" asp-controller="Organogram" asp-action="Index">
             <span class="nav-left"><span class="nav-icon">&#9737;</span>Organogram</span>
         </a>
@@ -46,44 +57,50 @@
         <a class="nav-item @(IsActive("Overtime") ? "active" : "")" asp-controller="Overtime" asp-action="Index">
             <span class="nav-left"><span class="nav-icon">&#9203;</span>Overtime</span>
         </a>
-        <a class="nav-item @(IsActive("PayrollPeriod") || IsActive("Payroll") ? "active" : "")" asp-controller="PayrollPeriod" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">$</span>Payroll</span>
-        </a>
-        <a class="nav-item @(IsActive("Reports") ? "active" : "")" asp-controller="Reports" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#128202;</span>Reports</span>
-        </a>
+        @if (isAdmin)
+        {
+            <a class="nav-item @(IsActive("PayrollPeriod") || IsActive("Payroll") ? "active" : "")" asp-controller="PayrollPeriod" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">$</span>Payroll</span>
+            </a>
+            <a class="nav-item @(IsActive("Reports") ? "active" : "")" asp-controller="Reports" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128202;</span>Reports</span>
+            </a>
 
-        <div class="nav-title">Configuration</div>
-        <a class="nav-item @(IsActive("Company") ? "active" : "")" asp-controller="Company" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">$</span>Companies</span>
-        </a>
-        <a class="nav-item @(IsActive("SalaryComponent") ? "active" : "")" asp-controller="SalaryComponent" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#177;</span>Salary Components</span>
-        </a>
-        <a class="nav-item @(IsActive("SalaryStructure") ? "active" : "")" asp-controller="SalaryStructure" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9636;</span>Salary Structures</span>
-        </a>
-        <a class="nav-item @(IsActive("OvertimePolicy") ? "active" : "")" asp-controller="OvertimePolicy" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9201;</span>Overtime Policies</span>
-        </a>
-        <a class="nav-item @(IsActive("MasterData") ? "active" : "")" asp-controller="MasterData" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9776;</span>Master Data</span>
-        </a>
-        <a class="nav-item @(IsActive("Shift") ? "active" : "")" asp-controller="Shift" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9201;</span>Shifts</span>
-        </a>
-        <a class="nav-item @(IsActive("DutyRoster") ? "active" : "")" asp-controller="DutyRoster" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#128197;</span>Duty Roster</span>
-        </a>
-        <a class="nav-item @(IsActive("Holiday") ? "active" : "")" asp-controller="Holiday" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#9729;</span>Holidays</span>
-        </a>
-        <a class="nav-item @(IsActive("LeaveType") ? "active" : "")" asp-controller="LeaveType" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#128197;</span>Leave Types</span>
-        </a>
-        <a class="nav-item @(IsActive("User") ? "active" : "")" asp-controller="User" asp-action="Index">
-            <span class="nav-left"><span class="nav-icon">&#128100;</span>Manage Users</span>
-        </a>
+            <div class="nav-title">Configuration</div>
+            <a class="nav-item @(IsActive("Company") ? "active" : "")" asp-controller="Company" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">$</span>Companies</span>
+            </a>
+            <a class="nav-item @(IsActive("SalaryComponent") ? "active" : "")" asp-controller="SalaryComponent" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#177;</span>Salary Components</span>
+            </a>
+            <a class="nav-item @(IsActive("SalaryStructure") ? "active" : "")" asp-controller="SalaryStructure" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9636;</span>Salary Structures</span>
+            </a>
+            <a class="nav-item @(IsActive("OvertimePolicy") ? "active" : "")" asp-controller="OvertimePolicy" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9201;</span>Overtime Policies</span>
+            </a>
+            <a class="nav-item @(IsActive("MasterData") ? "active" : "")" asp-controller="MasterData" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9776;</span>Master Data</span>
+            </a>
+            <a class="nav-item @(IsActive("Shift") ? "active" : "")" asp-controller="Shift" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9201;</span>Shifts</span>
+            </a>
+            <a class="nav-item @(IsActive("DutyRoster") ? "active" : "")" asp-controller="DutyRoster" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128197;</span>Duty Roster</span>
+            </a>
+            <a class="nav-item @(IsActive("Holiday") ? "active" : "")" asp-controller="Holiday" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#9729;</span>Holidays</span>
+            </a>
+            <a class="nav-item @(IsActive("LeaveType") ? "active" : "")" asp-controller="LeaveType" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128197;</span>Leave Types</span>
+            </a>
+            <a class="nav-item @(IsActive("User") ? "active" : "")" asp-controller="User" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128100;</span>Manage Users</span>
+            </a>
+            <a class="nav-item @(IsActive("Role") ? "active" : "")" asp-controller="Role" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">&#128273;</span>Manage Roles</span>
+            </a>
+        }
 
         <div class="sidebar-footer">
             <strong>Signed in as</strong>

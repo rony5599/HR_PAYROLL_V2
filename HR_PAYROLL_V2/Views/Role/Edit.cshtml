@@ -1,0 +1,44 @@
+@model HR_PAYROLL_V2.Models.Role.RoleViewModel
+@{
+    ViewData["Title"] = "Edit Role";
+    var permissionsByModule = ViewBag.PermissionsByModule as List<IGrouping<string, HR_PAYROLL_V2.Domain.Entities.Permission>> ?? new();
+}
+<div class="page-head">
+    <div><h2>Edit Role</h2><p>@Model.Name</p></div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IsSystemRole" />
+            <div asp-validation-summary="All" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c"></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="Name"></label><input asp-for="Name" readonly="@Model.IsSystemRole" /></div>
+                <div class="field full"><label asp-for="Description"></label><textarea asp-for="Description"></textarea></div>
+                <div class="field full">
+                    <label>Permissions</label>
+                    @foreach (var group in permissionsByModule)
+                    {
+                        <div style="margin-bottom:10px">
+                            <strong style="font-size:12px;color:#475467">@group.Key</strong>
+                            <div class="checkbox-list">
+                                @foreach (var permission in group)
+                                {
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="SelectedPermissionIds" value="@permission.Id" checked="@(Model.SelectedPermissionIds.Contains(permission.Id))" />
+                                        @permission.Name
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="setup-actions">
+                <a class="btn btn-outline" asp-action="Index">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
