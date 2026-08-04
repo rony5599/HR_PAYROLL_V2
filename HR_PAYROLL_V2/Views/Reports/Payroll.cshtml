@@ -1,7 +1,9 @@
 @model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.PayrollRecord>
+@using HR_PAYROLL_V2.Models
 @{
     ViewData["Title"] = "Payroll Report";
     var period = (HR_PAYROLL_V2.Domain.Entities.PayrollPeriod?)ViewBag.Period;
+    var currency = period?.Company?.PayrollCurrency ?? "USD";
 }
 <div class="page-head">
     <div><h2>Payroll Report</h2><p>@(period is null ? "Select a payroll period to view its report." : $"{period.Name} · {period.StartDate:MMM d} – {period.EndDate:MMM d, yyyy}")</p></div>
@@ -29,13 +31,13 @@
                 {
                     <tr>
                         <td>@r.Employee?.FullName</td>
-                        <td>@r.BasicAmount.ToString("C")</td>
-                        <td>@r.EarningsAmount.ToString("C")</td>
-                        <td>@r.OvertimeAmount.ToString("C")</td>
-                        <td>@r.AttendanceDeductionAmount.ToString("C")</td>
-                        <td>@r.WorkHourDeductionAmount.ToString("C")</td>
-                        <td>@r.GrossPay.ToString("C")</td>
-                        <td><strong>@r.NetPay.ToString("C")</strong></td>
+                        <td>@CurrencyDisplay.Format(r.BasicAmount, currency)</td>
+                        <td>@CurrencyDisplay.Format(r.EarningsAmount, currency)</td>
+                        <td>@CurrencyDisplay.Format(r.OvertimeAmount, currency)</td>
+                        <td>@CurrencyDisplay.Format(r.AttendanceDeductionAmount, currency)</td>
+                        <td>@CurrencyDisplay.Format(r.WorkHourDeductionAmount, currency)</td>
+                        <td>@CurrencyDisplay.Format(r.GrossPay, currency)</td>
+                        <td><strong>@CurrencyDisplay.Format(r.NetPay, currency)</strong></td>
                     </tr>
                 }
                 </tbody>

@@ -36,7 +36,10 @@ public class PayrollController : Controller
             .OrderBy(r => r.Employee!.EmployeeCode)
             .ToListAsync();
 
+        var company = await _unitOfWork.Companies.GetByIdAsync(period.CompanyId);
+
         ViewBag.Period = period;
+        ViewBag.Currency = company?.PayrollCurrency ?? "USD";
         return View(records);
     }
 

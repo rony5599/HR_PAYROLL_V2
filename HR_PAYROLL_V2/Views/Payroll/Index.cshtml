@@ -1,9 +1,11 @@
 @model IReadOnlyList<HR_PAYROLL_V2.Domain.Entities.PayrollRecord>
 @using HR_PAYROLL_V2.Domain.Enums
+@using HR_PAYROLL_V2.Models
 @{
     var period = (HR_PAYROLL_V2.Domain.Entities.PayrollPeriod)ViewBag.Period;
     ViewData["Title"] = period.Name;
     var isDraft = period.Status == PayrollPeriodStatus.Draft;
+    string currency = ViewBag.Currency;
 }
 <div class="page-head">
     <div>
@@ -31,9 +33,9 @@
 {
     <div class="summary-strip" style="grid-template-columns:repeat(4,1fr)">
         <div class="summary-pill"><strong>@Model.Count</strong><span>Employees</span></div>
-        <div class="summary-pill"><strong>@Model.Sum(r => r.GrossPay).ToString("C")</strong><span>Gross payroll</span></div>
-        <div class="summary-pill"><strong>@((Model.Sum(r => r.AttendanceDeductionAmount) + Model.Sum(r => r.WorkHourDeductionAmount)).ToString("C"))</strong><span>Attendance deductions</span></div>
-        <div class="summary-pill"><strong>@Model.Sum(r => r.NetPay).ToString("C")</strong><span>Net payable</span></div>
+        <div class="summary-pill"><strong>@CurrencyDisplay.Format(Model.Sum(r => r.GrossPay), currency)</strong><span>Gross payroll</span></div>
+        <div class="summary-pill"><strong>@CurrencyDisplay.Format(Model.Sum(r => r.AttendanceDeductionAmount) + Model.Sum(r => r.WorkHourDeductionAmount), currency)</strong><span>Attendance deductions</span></div>
+        <div class="summary-pill"><strong>@CurrencyDisplay.Format(Model.Sum(r => r.NetPay), currency)</strong><span>Net payable</span></div>
     </div>
 }
 
@@ -46,13 +48,13 @@
             {
                 <tr>
                     <td>@r.Employee?.FullName</td>
-                    <td>@r.BasicAmount.ToString("C")</td>
-                    <td>@r.EarningsAmount.ToString("C")</td>
-                    <td>@r.OvertimeAmount.ToString("C")</td>
-                    <td>@r.AttendanceDeductionAmount.ToString("C")</td>
-                    <td>@r.WorkHourDeductionAmount.ToString("C")</td>
-                    <td>@r.GrossPay.ToString("C")</td>
-                    <td><strong>@r.NetPay.ToString("C")</strong></td>
+                    <td>@CurrencyDisplay.Format(r.BasicAmount, currency)</td>
+                    <td>@CurrencyDisplay.Format(r.EarningsAmount, currency)</td>
+                    <td>@CurrencyDisplay.Format(r.OvertimeAmount, currency)</td>
+                    <td>@CurrencyDisplay.Format(r.AttendanceDeductionAmount, currency)</td>
+                    <td>@CurrencyDisplay.Format(r.WorkHourDeductionAmount, currency)</td>
+                    <td>@CurrencyDisplay.Format(r.GrossPay, currency)</td>
+                    <td><strong>@CurrencyDisplay.Format(r.NetPay, currency)</strong></td>
                     <td>@r.PresentDays / @r.AbsentDays / @(r.PaidLeaveDays + r.UnpaidLeaveDays)</td>
                 </tr>
             }
